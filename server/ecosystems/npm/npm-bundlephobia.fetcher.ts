@@ -13,5 +13,8 @@ export async function fetchBundleSize(name: string) {
     source: 'bundlephobia',
     cacheKey: name,
     url: `https://bundlephobia.com/api/size?package=${encodeURIComponent(name)}`,
+    headers: {
+      'x-bundlephobia-user': 'pkglens.com',
+    },
   })
 }

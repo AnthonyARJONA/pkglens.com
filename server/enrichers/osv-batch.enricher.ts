@@ -34,12 +34,13 @@ function stripSemverPrefix(range: string): string {
 
 export async function fetchDepsVulnerabilities(
   deps: Record<string, string>,
+  ecosystem: string = 'npm',
 ): Promise<DepVulnResult[]> {
   const entries = Object.entries(deps)
   if (entries.length === 0) return []
 
   const queries: OsvBatchQuery[] = entries.map(([name, range]) => ({
-    package: { name, ecosystem: 'npm' },
+    package: { name, ecosystem },
     version: stripSemverPrefix(range),
   }))
 

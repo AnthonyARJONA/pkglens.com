@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { DepsVulnBannerViewModel } from '~/presenters/package-header.presenter'
+import type { DepsVulnBannerViewModel } from '~/presenters/deps-vuln-banner.presenter'
 
 defineProps<DepsVulnBannerViewModel>()
 const emit = defineEmits<{ navigate: [name: string] }>()

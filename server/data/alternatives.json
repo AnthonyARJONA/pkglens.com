@@ -1,0 +1,507 @@
+{
+  "react": [
+    "vue",
+    "svelte",
+    "preact",
+    "solid-js",
+    "lit"
+  ],
+  "vue": [
+    "react",
+    "svelte",
+    "preact",
+    "solid-js",
+    "lit"
+  ],
+  "svelte": [
+    "react",
+    "vue",
+    "preact",
+    "solid-js",
+    "lit"
+  ],
+  "preact": [
+    "react",
+    "vue",
+    "svelte",
+    "solid-js"
+  ],
+  "solid-js": [
+    "react",
+    "vue",
+    "svelte",
+    "preact"
+  ],
+  "angular": [
+    "react",
+    "vue",
+    "svelte",
+    "lit"
+  ],
+  "lit": [
+    "react",
+    "vue",
+    "svelte",
+    "solid-js"
+  ],
+  "next": [
+    "nuxt",
+    "remix",
+    "@sveltejs/kit",
+    "astro",
+    "gatsby"
+  ],
+  "nuxt": [
+    "next",
+    "remix",
+    "@sveltejs/kit",
+    "astro"
+  ],
+  "remix": [
+    "next",
+    "nuxt",
+    "@sveltejs/kit",
+    "astro"
+  ],
+  "astro": [
+    "next",
+    "nuxt",
+    "remix",
+    "gatsby"
+  ],
+  "gatsby": [
+    "next",
+    "astro",
+    "nuxt",
+    "remix"
+  ],
+  "express": [
+    "fastify",
+    "hono",
+    "koa",
+    "h3",
+    "elysia"
+  ],
+  "fastify": [
+    "express",
+    "hono",
+    "koa",
+    "h3",
+    "elysia"
+  ],
+  "hono": [
+    "express",
+    "fastify",
+    "elysia",
+    "h3",
+    "itty-router"
+  ],
+  "koa": [
+    "express",
+    "fastify",
+    "hono",
+    "h3"
+  ],
+  "elysia": [
+    "hono",
+    "fastify",
+    "express",
+    "h3"
+  ],
+  "h3": [
+    "hono",
+    "express",
+    "fastify",
+    "elysia"
+  ],
+  "axios": [
+    "ky",
+    "got",
+    "node-fetch",
+    "ofetch",
+    "undici"
+  ],
+  "got": [
+    "axios",
+    "ky",
+    "node-fetch",
+    "ofetch",
+    "undici"
+  ],
+  "node-fetch": [
+    "axios",
+    "ky",
+    "got",
+    "ofetch",
+    "undici"
+  ],
+  "ky": [
+    "axios",
+    "got",
+    "ofetch",
+    "node-fetch"
+  ],
+  "ofetch": [
+    "axios",
+    "ky",
+    "got",
+    "node-fetch"
+  ],
+  "lodash": [
+    "underscore",
+    "ramda",
+    "remeda",
+    "radash"
+  ],
+  "ramda": [
+    "lodash",
+    "remeda",
+    "radash"
+  ],
+  "moment": [
+    "dayjs",
+    "date-fns",
+    "luxon"
+  ],
+  "dayjs": [
+    "moment",
+    "date-fns",
+    "luxon"
+  ],
+  "date-fns": [
+    "dayjs",
+    "moment",
+    "luxon"
+  ],
+  "luxon": [
+    "dayjs",
+    "date-fns",
+    "moment"
+  ],
+  "zod": [
+    "yup",
+    "joi",
+    "superstruct",
+    "valibot",
+    "arktype"
+  ],
+  "yup": [
+    "zod",
+    "joi",
+    "superstruct",
+    "valibot"
+  ],
+  "joi": [
+    "zod",
+    "yup",
+    "superstruct",
+    "valibot"
+  ],
+  "valibot": [
+    "zod",
+    "yup",
+    "joi",
+    "arktype"
+  ],
+  "arktype": [
+    "zod",
+    "valibot",
+    "yup"
+  ],
+  "tailwindcss": [
+    "unocss",
+    "styled-components",
+    "@emotion/react",
+    "vanilla-extract"
+  ],
+  "styled-components": [
+    "@emotion/react",
+    "tailwindcss",
+    "unocss",
+    "vanilla-extract"
+  ],
+  "@emotion/react": [
+    "styled-components",
+    "tailwindcss",
+    "unocss",
+    "vanilla-extract"
+  ],
+  "webpack": [
+    "vite",
+    "esbuild",
+    "rollup",
+    "parcel",
+    "rspack"
+  ],
+  "vite": [
+    "webpack",
+    "esbuild",
+    "rollup",
+    "parcel",
+    "rspack"
+  ],
+  "esbuild": [
+    "vite",
+    "webpack",
+    "rollup",
+    "swc",
+    "rspack"
+  ],
+  "rollup": [
+    "vite",
+    "webpack",
+    "esbuild",
+    "rspack"
+  ],
+  "parcel": [
+    "vite",
+    "webpack",
+    "esbuild",
+    "rollup"
+  ],
+  "jest": [
+    "vitest",
+    "mocha",
+    "ava",
+    "tap"
+  ],
+  "vitest": [
+    "jest",
+    "mocha",
+    "ava",
+    "tap"
+  ],
+  "mocha": [
+    "jest",
+    "vitest",
+    "ava",
+    "tap"
+  ],
+  "cypress": [
+    "playwright",
+    "puppeteer"
+  ],
+  "playwright": [
+    "cypress",
+    "puppeteer"
+  ],
+  "puppeteer": [
+    "playwright",
+    "cypress"
+  ],
+  "prisma": [
+    "drizzle-orm",
+    "typeorm",
+    "sequelize",
+    "knex",
+    "kysely"
+  ],
+  "drizzle-orm": [
+    "prisma",
+    "typeorm",
+    "sequelize",
+    "knex",
+    "kysely"
+  ],
+  "typeorm": [
+    "prisma",
+    "drizzle-orm",
+    "sequelize",
+    "knex",
+    "kysely"
+  ],
+  "sequelize": [
+    "prisma",
+    "drizzle-orm",
+    "typeorm",
+    "knex",
+    "kysely"
+  ],
+  "kysely": [
+    "prisma",
+    "drizzle-orm",
+    "knex",
+    "typeorm"
+  ],
+  "mongoose": [
+    "prisma",
+    "typeorm",
+    "mongodb"
+  ],
+  "redux": [
+    "zustand",
+    "jotai",
+    "mobx",
+    "recoil",
+    "valtio"
+  ],
+  "zustand": [
+    "redux",
+    "jotai",
+    "mobx",
+    "valtio",
+    "recoil"
+  ],
+  "jotai": [
+    "zustand",
+    "redux",
+    "recoil",
+    "valtio",
+    "mobx"
+  ],
+  "mobx": [
+    "redux",
+    "zustand",
+    "jotai",
+    "valtio"
+  ],
+  "pinia": [
+    "vuex",
+    "zustand"
+  ],
+  "vuex": [
+    "pinia",
+    "zustand"
+  ],
+  "@tanstack/react-query": [
+    "swr",
+    "apollo-client",
+    "urql"
+  ],
+  "swr": [
+    "@tanstack/react-query",
+    "apollo-client",
+    "urql"
+  ],
+  "react-hook-form": [
+    "formik",
+    "@tanstack/react-form"
+  ],
+  "formik": [
+    "react-hook-form",
+    "@tanstack/react-form"
+  ],
+  "chalk": [
+    "picocolors",
+    "kleur",
+    "colorette",
+    "ansi-colors"
+  ],
+  "picocolors": [
+    "chalk",
+    "kleur",
+    "colorette"
+  ],
+  "commander": [
+    "yargs",
+    "cac",
+    "citty",
+    "meow"
+  ],
+  "yargs": [
+    "commander",
+    "cac",
+    "citty",
+    "meow"
+  ],
+  "eslint": [
+    "biome",
+    "oxlint"
+  ],
+  "prettier": [
+    "biome",
+    "dprint"
+  ],
+  "jsonwebtoken": [
+    "jose",
+    "paseto"
+  ],
+  "bcrypt": [
+    "argon2",
+    "bcryptjs"
+  ],
+  "passport": [
+    "lucia",
+    "next-auth",
+    "arctic"
+  ],
+  "winston": [
+    "pino",
+    "bunyan",
+    "consola",
+    "tslog"
+  ],
+  "pino": [
+    "winston",
+    "bunyan",
+    "consola",
+    "tslog"
+  ],
+  "bull": [
+    "bullmq",
+    "bee-queue",
+    "agenda",
+    "pg-boss"
+  ],
+  "bullmq": [
+    "bull",
+    "bee-queue",
+    "agenda",
+    "pg-boss"
+  ],
+  "uuid": [
+    "nanoid",
+    "cuid",
+    "ulid"
+  ],
+  "nanoid": [
+    "uuid",
+    "cuid",
+    "ulid"
+  ],
+  "framer-motion": [
+    "react-spring",
+    "gsap",
+    "animejs"
+  ],
+  "gsap": [
+    "framer-motion",
+    "animejs",
+    "react-spring"
+  ],
+  "d3": [
+    "chart.js",
+    "recharts",
+    "nivo",
+    "visx"
+  ],
+  "chart.js": [
+    "d3",
+    "recharts",
+    "nivo",
+    "apexcharts"
+  ],
+  "recharts": [
+    "chart.js",
+    "nivo",
+    "visx",
+    "d3"
+  ],
+  "pg": [
+    "mysql2",
+    "better-sqlite3"
+  ],
+  "mysql2": [
+    "pg",
+    "better-sqlite3",
+    "mariadb"
+  ],
+  "ioredis": [
+    "redis",
+    "@upstash/redis"
+  ],
+  "redis": [
+    "ioredis",
+    "@upstash/redis"
+  ]
+}

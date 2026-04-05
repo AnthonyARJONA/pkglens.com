@@ -24,13 +24,13 @@ interface OsvResponse {
   vulns: OsvVuln[]
 }
 
-export async function fetchVulnerabilities(name: string, version: string) {
+export async function fetchVulnerabilities(name: string, version: string, ecosystem: string = 'npm') {
   return fetchSafe<OsvResponse>({
     source: 'osv-vulns',
-    cacheKey: `${name}@${version}`,
+    cacheKey: `${ecosystem}:${name}@${version}`,
     url: 'https://api.osv.dev/v1/query',
     method: 'POST',
-    body: { package: { name, ecosystem: 'npm' }, version },
+    body: { package: { name, ecosystem }, version },
     fallback: { vulns: [] },
   })
 }

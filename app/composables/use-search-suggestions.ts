@@ -1,8 +1,6 @@
-export interface SearchSuggestion {
-  name: string
-  description: string
-  version: string
-}
+import { fetchSearchResults, type SearchResult } from '~/gateway/search.gateway'
+
+export type SearchSuggestion = SearchResult
 
 export function useSearchSuggestions() {
   const suggestions = ref<SearchSuggestion[]>([])
@@ -11,9 +9,8 @@ export function useSearchSuggestions() {
 
   function search(query: string) {
     if (debounceTimer) clearTimeout(debounceTimer)
-    const trimmed = query.trim()
 
-    if (trimmed.length < 2) {
+    if (query.trim().length < 2) {
       suggestions.value = []
       return
     }
@@ -21,14 +18,7 @@ export function useSearchSuggestions() {
     debounceTimer = setTimeout(async () => {
       loading.value = true
       try {
-        const res = await $fetch<{ objects: Array<{ package: { name: string; description: string; version: string } }> }>(
-          `https://registry.npmjs.org/-/v1/search?text=${encodeURIComponent(trimmed)}&size=5`,
-        )
-        suggestions.value = (res.objects || []).map((o) => ({
-          name: o.package.name,
-          description: (o.package.description || '').slice(0, 80),
-          version: o.package.version,
-        }))
+        suggestions.value = await fetchSearchResults(query.trim())
       } catch {
         suggestions.value = []
       } finally {

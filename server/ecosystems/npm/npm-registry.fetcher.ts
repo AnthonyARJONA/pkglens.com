@@ -28,6 +28,7 @@ export interface NpmVersionData {
   type: string
   module: string
   exports: unknown
+  dist: { unpackedSize?: number }
 }
 
 export interface NpmDownloads {
