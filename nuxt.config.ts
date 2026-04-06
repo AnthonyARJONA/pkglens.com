@@ -23,6 +23,7 @@ export default defineNuxtConfig({
         { property: 'og:description', content: 'Analyze any npm or Composer package in one view: bundle size, dependencies, vulnerabilities, license, maintenance health & alternatives.' },
         { property: 'og:url', content: 'https://pkglens.com' },
         { property: 'og:image', content: 'https://pkglens.com/og-image.png' },
+        { property: 'og:image:type', content: 'image/svg+xml' },
         { property: 'og:image:width', content: '1200' },
         { property: 'og:image:height', content: '630' },
         { property: 'og:locale', content: 'en_US' },
@@ -35,8 +36,6 @@ export default defineNuxtConfig({
       link: [
         { rel: 'canonical', href: 'https://pkglens.com' },
         { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
-        { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32.png' },
-        { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
         { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
         { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
         { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap' },
@@ -73,6 +72,10 @@ export default defineNuxtConfig({
   components: [
     { path: '~/ui', pathPrefix: false, extensions: ['.vue'] },
   ],
+
+  nitro: {
+    compressPublicAssets: true,
+  },
 
   runtimeConfig: {
     githubToken: process.env.GITHUB_TOKEN || '',
