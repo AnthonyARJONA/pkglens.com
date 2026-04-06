@@ -20,10 +20,7 @@ setInterval(() => {
 }, CLEANUP_INTERVAL)
 
 export default defineEventHandler((event) => {
-  const ip = getRequestIP(event)
-  if (!ip) {
-    throw createError({ statusCode: 400, statusMessage: 'Unable to identify client' })
-  }
+  const ip = getRequestIP(event, { xForwardedFor: true }) || getRequestIP(event) || '127.0.0.1'
   const now = Date.now()
   const entry = store.get(ip)
 
