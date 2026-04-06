@@ -10,8 +10,8 @@ export default defineEventHandler((event) => {
     'X-XSS-Protection': '0',
     'Referrer-Policy': 'strict-origin-when-cross-origin',
     'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
-    // 'unsafe-inline' is required for Nuxt SSR hydration scripts and styles — known limitation
-    'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'",
+    // 'unsafe-inline' required for Nuxt SSR hydration scripts and styles
+    'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://registry.npmjs.org https://api.npmjs.org https://repo.packagist.org https://packagist.org",
   })
 
   if (!isLocalhost) {
