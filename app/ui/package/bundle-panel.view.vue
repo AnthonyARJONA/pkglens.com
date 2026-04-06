@@ -95,7 +95,7 @@ defineProps<BundlePanelViewModel>()
 .shake-badge.good { color: var(--green); background: var(--green-bg); }
 .shake-badge.bad { color: var(--text-dim); background: var(--bg); }
 
-.impact-row { display: flex; gap: 20px; }
+.impact-row { display: flex; gap: 32px; justify-content: center; padding: 4px 0; }
 .impact-item { text-align: center; }
 .impact-value { font-size: 20px; font-weight: 700; color: var(--text-bright); display: block; }
 .impact-label { font-size: 11px; color: var(--text-dim); }
