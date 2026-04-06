@@ -10,7 +10,7 @@ defineProps<{
 }>()
 
 const emit = defineEmits<{
-  search: [name: string, ecosystem: EcosystemId]
+  search: [name: string, ecosystem: EcosystemId, version?: string]
   input: [query: string, ecosystem: EcosystemId]
   ecosystemChange: [ecosystem: EcosystemId]
   scanFile: [content: string, filename: string]
@@ -70,7 +70,7 @@ function openFileDialog() {
     <SearchBarView
       variant="hero"
       :suggestions="searchResults"
-      @search="(name, eco) => emit('search', name, eco)"
+      @search="(name, eco, ver) => emit('search', name, eco, ver)"
       @input="(q, eco) => emit('input', q, eco)"
       @ecosystem-change="(eco) => emit('ecosystemChange', eco)"
     />

@@ -19,6 +19,7 @@ const activeTab = ref<TabId>('deps')
 const installCopied = ref(false)
 const packageName = computed(() => decodeURIComponent(route.params.name as string))
 const ecosystem = computed(() => (route.query.eco as EcosystemId) || 'npm' as EcosystemId)
+const requestedVersion = computed(() => (route.query.version as string) || undefined)
 
 const headerVM = computed(() => data.value ? presentPackageHeader(data.value) : null)
 const depsVM = computed(() => data.value ? presentDepsPanel(data.value) : null)
@@ -27,12 +28,17 @@ const securityVM = computed(() => data.value ? presentSecurityPanel(data.value) 
 const changelogVM = computed(() => data.value ? presentChangelogPanel(data.value) : null)
 const alternativesVM = computed(() => presentAlternatives(alternatives.value))
 
-watch([() => route.params.name, () => route.query.eco], () => { activeTab.value = 'deps'; fetchPackage(packageName.value, ecosystem.value) }, { immediate: true })
+watch([() => route.params.name, () => route.query.eco, () => route.query.version], () => {
+  activeTab.value = 'deps'
+  fetchPackage(packageName.value, ecosystem.value, requestedVersion.value)
+}, { immediate: true })
 watch(data, (pkg) => { if (pkg) fetchAlternatives(pkg.registry.name, ecosystem.value) })
 
-function goToPackage(name: string, eco?: string) {
+function goToPackage(name: string, eco?: string, version?: string) {
   const effectiveEco = eco || ecosystem.value
-  const query = effectiveEco && effectiveEco !== 'npm' ? { eco: effectiveEco } : {}
+  const query: Record<string, string> = {}
+  if (effectiveEco && effectiveEco !== 'npm') query.eco = effectiveEco
+  if (version) query.version = version
   router.push({ path: `/package/${encodeURIComponent(name)}`, query })
 }
 
@@ -50,7 +56,7 @@ useHead({ title: computed(() => data.value ? `${data.value.registry.name} — pk
   <header class="header">
     <div class="header-inner">
       <NuxtLink to="/" class="logo">pkg<span>lens</span></NuxtLink>
-      <SearchBarView variant="header" :suggestions="suggestions" :initial-ecosystem="ecosystem" @search="(name, eco) => goToPackage(name, eco)" @input="(q, eco) => searchSuggestions(q, eco)" />
+      <SearchBarView variant="header" :suggestions="suggestions" :initial-ecosystem="ecosystem" @search="(name, eco, ver) => goToPackage(name, eco, ver)" @input="(q, eco) => searchSuggestions(q, eco)" />
     </div>
   </header>
 

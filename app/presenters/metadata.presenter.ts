@@ -3,7 +3,8 @@ import type { PackageData } from '~/core/package/package.types'
 export function buildMetadataLine(data: PackageData): string {
   const parts: string[] = []
   if (data.registry.license) parts.push(data.registry.license)
-  parts.push('v' + data.registry.latestVersion)
+  const ver = data.registry.latestVersion
+  parts.push(ver.startsWith('v') ? ver : 'v' + ver)
 
   const engines = data.registry.latest?.engines || {}
 

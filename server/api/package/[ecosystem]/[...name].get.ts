@@ -26,13 +26,15 @@ export default defineEventHandler(async (event) => {
   }
 
   const decodedName = decodeURIComponent(nameParam)
+  const requestedVersion = String(getQuery(event).version || '')
 
-  const registry = await resolver.fetchRegistry(decodedName)
+  const registry = await resolver.fetchRegistry(decodedName, requestedVersion || undefined)
   if (!registry.data) {
     throw createError({ statusCode: 404, statusMessage: `Package "${decodedName}" not found on ${ecosystem}` })
   }
 
   const reg = registry.data
+
   const ghRepo = extractGithubRepo(reg.repository)
   const osvEcosystem = ECOSYSTEM_OSV_MAP[ecosystem] || ecosystem
   const directDeps = reg.latest?.dependencies || {}

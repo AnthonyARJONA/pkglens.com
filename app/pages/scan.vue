@@ -15,9 +15,13 @@ watch([result, loading, error], () => {
   }
 }, { immediate: true })
 
-function goToPackage(name: string, eco?: EcosystemId) {
-  const effectiveEco = eco || result.value?.ecosystem
-  const query = effectiveEco && effectiveEco !== 'npm' ? { eco: effectiveEco } : {}
+function goToPackage(name: string, versionOrEco?: string) {
+  const effectiveEco = result.value?.ecosystem || 'npm'
+  const query: Record<string, string> = {}
+  if (effectiveEco && effectiveEco !== 'npm') query.eco = effectiveEco
+  if (versionOrEco && !['npm', 'packagist', 'pypi', 'cargo', 'go'].includes(versionOrEco)) {
+    query.version = versionOrEco
+  }
   router.push({ path: `/package/${encodeURIComponent(name)}`, query })
 }
 

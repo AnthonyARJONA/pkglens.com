@@ -2,7 +2,7 @@
 import type { ScanResultViewModel } from '~/presenters/scan.presenter'
 
 defineProps<ScanResultViewModel>()
-const emit = defineEmits<{ navigate: [name: string] }>()
+const emit = defineEmits<{ navigate: [name: string, version?: string] }>()
 </script>
 
 <template>
@@ -36,7 +36,7 @@ const emit = defineEmits<{ navigate: [name: string] }>()
         </thead>
         <tbody>
           <tr v-for="d in deps" :key="d.name">
-            <td class="pkg-cell" @click="emit('navigate', d.name)">{{ d.name }}</td>
+            <td class="pkg-cell" @click="emit('navigate', d.name, d.version)">{{ d.name }}</td>
             <td class="mono">{{ d.version }}</td>
             <td><span class="vuln-badge">{{ d.vulnCount }}</span></td>
             <td><span class="sev" :class="d.topSeverity">{{ d.topSeverity }}</span></td>
@@ -54,7 +54,7 @@ const emit = defineEmits<{ navigate: [name: string] }>()
         </thead>
         <tbody>
           <tr v-for="d in devDeps" :key="d.name">
-            <td class="pkg-cell" @click="emit('navigate', d.name)">{{ d.name }}</td>
+            <td class="pkg-cell" @click="emit('navigate', d.name, d.version)">{{ d.name }}</td>
             <td class="mono">{{ d.version }}</td>
             <td><span class="vuln-badge">{{ d.vulnCount }}</span></td>
             <td><span class="sev" :class="d.topSeverity">{{ d.topSeverity }}</span></td>

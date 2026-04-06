@@ -41,10 +41,12 @@ const activeEco = ref<EcosystemId>('npm')
 const quickLinks = computed(() => QUICK_LINKS[activeEco.value] || QUICK_LINKS.npm)
 const scanLabel = computed(() => SCAN_LABELS[activeEco.value])
 
-function handleSearch(name: string, eco?: EcosystemId) {
+function handleSearch(name: string, eco?: EcosystemId, version?: string) {
   if (eco) activeEco.value = eco
   clearSearch()
-  const query = eco && eco !== 'npm' ? { eco } : {}
+  const query: Record<string, string> = {}
+  if (eco && eco !== 'npm') query.eco = eco
+  if (version) query.version = version
   router.push({ path: `/package/${encodeURIComponent(name)}`, query })
 }
 

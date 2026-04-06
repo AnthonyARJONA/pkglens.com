@@ -8,12 +8,22 @@ import { buildVersionSummary } from './version-summary.builder'
 export const npmResolver: EcosystemResolver = {
   id: 'npm',
 
-  async fetchRegistry(name: string) {
+  async fetchRegistry(name: string, version?: string) {
     const result = await fetchNpmRegistry(name)
     if (!result.data) return { data: null, stale: result.stale }
 
     const reg = result.data
-    const latestVersion = reg['dist-tags']?.latest || Object.keys(reg.versions || {}).pop() || ''
+    let latestVersion = reg['dist-tags']?.latest || Object.keys(reg.versions || {}).pop() || ''
+
+    if (version) {
+      const allKeys = Object.keys(reg.versions || {}).reverse()
+      const match = allKeys.find((v) => {
+        const clean = v.replace(/^v/, '')
+        return clean === version || v === version || clean.startsWith(version + '.')
+      })
+      if (match) latestVersion = match
+    }
+
     const latestData = reg.versions?.[latestVersion]
 
     return {

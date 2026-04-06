@@ -38,7 +38,7 @@ export interface BundleResult {
 
 export interface EcosystemResolver {
   id: EcosystemId
-  fetchRegistry(name: string): Promise<{ data: RegistryResult | null; stale: boolean }>
+  fetchRegistry(name: string, version?: string): Promise<{ data: RegistryResult | null; stale: boolean }>
   fetchDownloads(name: string): Promise<{ data: DownloadsResult | null; stale: boolean }>
   fetchBundle(name: string): Promise<{ data: BundleResult | null; stale: boolean }>
   installCommand(name: string): string

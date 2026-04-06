@@ -20,7 +20,18 @@ export default defineEventHandler(async (event) => {
   }
 
   const reg = registry.data
-  const latestVersion = reg['dist-tags']?.latest || Object.keys(reg.versions || {}).pop() || ''
+  const requestedVersion = String(getQuery(event).version || '')
+  let latestVersion = reg['dist-tags']?.latest || Object.keys(reg.versions || {}).pop() || ''
+
+  // Support specific version via query param
+  if (requestedVersion) {
+    const allVersionKeys = Object.keys(reg.versions || {}).reverse()
+    const exact = allVersionKeys.find((v) => v === requestedVersion || v === 'v' + requestedVersion)
+    const prefixed = allVersionKeys.find((v) => v.replace(/^v/, '').startsWith(requestedVersion + '.') || v.replace(/^v/, '') === requestedVersion)
+    if (exact) latestVersion = exact
+    else if (prefixed) latestVersion = prefixed
+  }
+
   const latestData = reg.versions?.[latestVersion]
   const ghRepo = extractGithubRepo(latestData?.repository || reg.repository)
   const directDeps = latestData?.dependencies || {}

@@ -10,7 +10,7 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  search: [name: string, ecosystem: EcosystemId]
+  search: [name: string, ecosystem: EcosystemId, version?: string]
   input: [query: string, ecosystem: EcosystemId]
   ecosystemChange: [ecosystem: EcosystemId]
 }>()
@@ -29,9 +29,22 @@ function handleInput() {
   showDropdown.value = true
 }
 
+function parseVersionFromQuery(raw: string): { name: string; version?: string } {
+  // npm: react@16  |  composer: symfony/console:6.3
+  const atMatch = raw.match(/^(.+)@(.+)$/)
+  if (atMatch) return { name: atMatch[1]!, version: atMatch[2]! }
+  // Only for vendor/package:version (composer style) — avoid matching scoped npm like @scope/pkg
+  const colonMatch = raw.match(/^([^@][^:]+):(.+)$/)
+  if (colonMatch) return { name: colonMatch[1]!, version: colonMatch[2]! }
+  return { name: raw }
+}
+
 function handleSearch() {
-  const name = query.value.trim()
-  if (name) { showDropdown.value = false; emit('search', name, activeEco.value) }
+  const raw = query.value.trim()
+  if (!raw) return
+  showDropdown.value = false
+  const { name, version } = parseVersionFromQuery(raw)
+  emit('search', name, activeEco.value, version)
 }
 
 function selectSuggestion(name: string) {

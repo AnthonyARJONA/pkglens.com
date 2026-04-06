@@ -23,7 +23,7 @@ function isStableVersion(v: string): boolean {
 export const packagistResolver: EcosystemResolver = {
   id: 'packagist',
 
-  async fetchRegistry(name: string) {
+  async fetchRegistry(name: string, version?: string) {
     const [versionsRes, metaRes] = await Promise.all([
       fetchPackagistVersions(name),
       fetchPackagistMeta(name),
@@ -34,7 +34,15 @@ export const packagistResolver: EcosystemResolver = {
     const allVersions = versionsRes.data.packages[name] || []
     if (allVersions.length === 0) return { data: null, stale: versionsRes.stale }
 
-    const latest = allVersions[0]!
+    // Select requested version or default to latest
+    let latest = allVersions[0]!
+    if (version) {
+      const match = allVersions.find((v) => {
+        const clean = v.version.replace(/^v/, '')
+        return clean === version || v.version === version || clean.startsWith(version + '.')
+      })
+      if (match) latest = match
+    }
     const meta = metaRes.data?.package
     const repoUrl = latest.source?.url || meta?.repository
 
@@ -58,7 +66,7 @@ export const packagistResolver: EcosystemResolver = {
 
     return {
       data: {
-        name: latest.name,
+        name: latest.name || name,
         description: latest.description || meta?.description || '',
         latestVersion: latest.version,
         license: latest.license?.[0] || null,
