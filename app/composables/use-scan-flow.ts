@@ -1,3 +1,5 @@
+import { fetchScanResults } from '~/gateway/scan.gateway'
+
 export interface ScanSummary {
   totalPackages: number
   totalVulns: number
@@ -31,7 +33,6 @@ export function useScanFlow() {
     result.value = null
 
     try {
-      const { fetchScanResults } = await import('../gateway/scan.gateway')
       result.value = await fetchScanResults(content, filename)
     } catch (err: unknown) {
       error.value = err instanceof Error ? err.message : 'Scan failed'
