@@ -1,4 +1,5 @@
-import { fetchNpmRegistry } from '../../ecosystems/npm/npm-registry.fetcher'
+import { getEcosystemResolver } from '../../core/ecosystems/ecosystem.factory'
+import type { EcosystemId } from '../../core/ecosystems/ecosystem.interface'
 
 export default defineEventHandler(async (event) => {
   const name = getRouterParam(event, 'name')
@@ -6,18 +7,38 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'Package name is required' })
   }
 
+  const query = getQuery(event)
+  const ecosystem = (query.ecosystem as EcosystemId) || 'npm'
   const decodedName = decodeURIComponent(name)
 
-  const registry = await fetchNpmRegistry(decodedName)
+  const resolver = getEcosystemResolver(ecosystem)
+  if (!resolver) {
+    throw createError({ statusCode: 400, statusMessage: `Unsupported ecosystem: ${ecosystem}` })
+  }
+
+  const registry = await resolver.fetchRegistry(decodedName)
   if (!registry.data) {
     throw createError({ statusCode: 404, statusMessage: 'Package not found' })
   }
 
   const reg = registry.data
-  const latestVersion = reg['dist-tags']?.latest || ''
-  const maintainerCount = (reg.maintainers || []).length
-  const versionCount = Object.keys(reg.versions || {}).length
-  const lastPublish = reg.time?.[latestVersion]
+  const score = computeBadgeScore(reg)
+
+  const svg = renderBadgeSvg(score)
+
+  setResponseHeaders(event, {
+    'Content-Type': 'image/svg+xml',
+    'Cache-Control': 'public, max-age=3600, s-maxage=3600',
+  })
+
+  return svg
+})
+
+function computeBadgeScore(reg: { latestVersion: string; maintainers: string[]; versions: { total: number; stable: Array<{ version: string; date: string | null }> } }): number {
+  const maintainerCount = reg.maintainers.length
+  const versionCount = reg.versions.total
+  const latestStable = reg.versions.stable[0]
+  const lastPublish = latestStable?.date
   const daysSinceRelease = lastPublish ? (Date.now() - new Date(lastPublish).getTime()) / 86400000 : 999
 
   let score = 60
@@ -27,15 +48,18 @@ export default defineEventHandler(async (event) => {
   else if (versionCount > 20) score += 10
   if (daysSinceRelease < 90) score += 15
   else if (daysSinceRelease > 365) score -= 10
-  score = Math.min(100, Math.max(10, score))
 
+  return Math.min(100, Math.max(10, score))
+}
+
+function renderBadgeSvg(score: number): string {
   const valueColor = score >= 80 ? '#4c1' : score >= 60 ? '#dfb317' : '#e05d44'
   const valueText = String(score)
   const labelWidth = 54
   const valueWidth = 36
   const totalWidth = labelWidth + valueWidth
 
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="${totalWidth}" height="20" viewBox="0 0 ${totalWidth} 20">
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${totalWidth}" height="20" viewBox="0 0 ${totalWidth} 20">
   <linearGradient id="s" x2="0" y2="100%"><stop offset="0" stop-color="#bbb" stop-opacity=".1"/><stop offset="1" stop-opacity=".1"/></linearGradient>
   <clipPath id="r"><rect width="${totalWidth}" height="20" rx="3" fill="#fff"/></clipPath>
   <g clip-path="url(#r)">
@@ -50,11 +74,4 @@ export default defineEventHandler(async (event) => {
     <text x="${labelWidth + valueWidth / 2}" y="14">${valueText}</text>
   </g>
 </svg>`
-
-  setResponseHeaders(event, {
-    'Content-Type': 'image/svg+xml',
-    'Cache-Control': 'public, max-age=3600, s-maxage=3600',
-  })
-
-  return svg
-})
+}

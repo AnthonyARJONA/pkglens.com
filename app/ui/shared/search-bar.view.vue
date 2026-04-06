@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { detectEcosystem, ECOSYSTEMS, type EcosystemId } from '~/core/ecosystem/ecosystem.types'
-import { DEBOUNCE_SEARCH_MS } from '~/core/constants'
+import { detectEcosystemFromQuery, findEcosystemMeta, type EcosystemId } from '~/presenters/search-bar.presenter'
 import type { SearchSuggestion } from '~/composables/use-search-suggestions'
 
 const props = defineProps<{
@@ -21,10 +20,10 @@ const userSelectedEco = ref<EcosystemId | null>(null)
 const detectedEco = ref<EcosystemId | null>(null)
 
 const activeEco = computed<EcosystemId>(() => userSelectedEco.value ?? detectedEco.value ?? props.initialEcosystem ?? 'npm')
-const activeEcoMeta = computed(() => ECOSYSTEMS.find((e) => e.id === activeEco.value)!)
+const activeEcoMeta = computed(() => findEcosystemMeta(activeEco.value))
 
 function handleInput() {
-  if (!userSelectedEco.value) detectedEco.value = detectEcosystem(query.value)
+  if (!userSelectedEco.value) detectedEco.value = detectEcosystemFromQuery(query.value)
   emit('input', query.value, activeEco.value)
   showDropdown.value = true
 }
