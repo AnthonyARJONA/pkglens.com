@@ -9,12 +9,13 @@ export default defineEventHandler(async (event) => {
 
   const query = getQuery(event)
   const ecosystem = (query.ecosystem as EcosystemId) || 'npm'
-  const decodedName = decodeURIComponent(name)
 
   const resolver = getEcosystemResolver(ecosystem)
   if (!resolver) {
-    throw createError({ statusCode: 400, statusMessage: `Unsupported ecosystem: ${ecosystem}` })
+    throw createError({ statusCode: 400, statusMessage: 'Unsupported ecosystem' })
   }
+
+  const decodedName = validatePackageName(decodeURIComponent(name), ecosystem)
 
   const registry = await resolver.fetchRegistry(decodedName)
   if (!registry.data) {
@@ -29,6 +30,7 @@ export default defineEventHandler(async (event) => {
   setResponseHeaders(event, {
     'Content-Type': 'image/svg+xml',
     'Cache-Control': 'public, max-age=3600, s-maxage=3600',
+    'Access-Control-Allow-Origin': '*',
   })
 
   return svg

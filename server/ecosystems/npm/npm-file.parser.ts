@@ -1,3 +1,5 @@
+import { sanitizeDeps } from '../../utils/safe-deps'
+
 export interface ParsedDependencies {
   ecosystem: 'npm'
   dependencies: Record<string, string>
@@ -11,8 +13,8 @@ export function parsePackageJson(content: string): ParsedDependencies | null {
 
     return {
       ecosystem: 'npm',
-      dependencies: parsed.dependencies || {},
-      devDependencies: parsed.devDependencies || {},
+      dependencies: sanitizeDeps(parsed.dependencies),
+      devDependencies: sanitizeDeps(parsed.devDependencies),
     }
   } catch {
     return null

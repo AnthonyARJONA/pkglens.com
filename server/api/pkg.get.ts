@@ -14,22 +14,24 @@ const ECOSYSTEM_OSV_MAP: Record<string, string> = {
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
-  const name = String(query.name || '')
+  const rawName = String(query.name || '')
   const ecosystem = (query.ecosystem as EcosystemId) || 'npm'
   const version = String(query.version || '') || undefined
 
-  if (!name) {
+  if (!rawName) {
     throw createError({ statusCode: 400, statusMessage: 'Package name is required (?name=)' })
   }
 
   const resolver = getEcosystemResolver(ecosystem)
   if (!resolver) {
-    throw createError({ statusCode: 400, statusMessage: `Ecosystem "${ecosystem}" is not supported` })
+    throw createError({ statusCode: 400, statusMessage: 'Unsupported ecosystem' })
   }
+
+  const name = validatePackageName(rawName, ecosystem)
 
   const registry = await resolver.fetchRegistry(name, version)
   if (!registry.data) {
-    throw createError({ statusCode: 404, statusMessage: `Package "${name}" not found on ${ecosystem}` })
+    throw createError({ statusCode: 404, statusMessage: 'Package not found' })
   }
 
   const reg = registry.data

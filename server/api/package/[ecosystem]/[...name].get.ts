@@ -22,15 +22,15 @@ export default defineEventHandler(async (event) => {
 
   const resolver = getEcosystemResolver(ecosystem)
   if (!resolver) {
-    throw createError({ statusCode: 400, statusMessage: `Ecosystem "${ecosystem}" is not supported` })
+    throw createError({ statusCode: 400, statusMessage: 'Unsupported ecosystem' })
   }
 
-  const decodedName = decodeURIComponent(nameParam)
+  const decodedName = validatePackageName(decodeURIComponent(nameParam), ecosystem)
   const requestedVersion = String(getQuery(event).version || '')
 
   const registry = await resolver.fetchRegistry(decodedName, requestedVersion || undefined)
   if (!registry.data) {
-    throw createError({ statusCode: 404, statusMessage: `Package "${decodedName}" not found on ${ecosystem}` })
+    throw createError({ statusCode: 404, statusMessage: 'Package not found' })
   }
 
   const reg = registry.data

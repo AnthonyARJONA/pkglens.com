@@ -14,7 +14,9 @@ export default defineEventHandler(async (event) => {
   const size = Math.min(Number(query.size) || 5, 10)
   const ecosystem = String(query.ecosystem || 'npm')
 
-  if (q.length < 2) return { results: [] }
+  if (q.length < 2 || q.length > 100) return { results: [] }
+
+  if (!['npm', 'packagist'].includes(ecosystem)) return { results: [] }
 
   if (ecosystem === 'packagist') {
     return searchPackagist(q, size)

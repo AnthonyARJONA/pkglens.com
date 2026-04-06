@@ -31,6 +31,7 @@ export async function fetchSafe<T>(options: FetchOptions): Promise<{ data: T | n
       const fetchOptions: RequestInit = {
         method,
         headers: { 'Accept': 'application/json', ...headers },
+        signal: AbortSignal.timeout(10_000),
       }
       if (body) {
         fetchOptions.body = JSON.stringify(body)

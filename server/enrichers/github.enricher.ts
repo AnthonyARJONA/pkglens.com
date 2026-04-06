@@ -23,11 +23,14 @@ export function extractGithubRepo(repoField: { type: string; url: string } | str
   if (!repoField) return null
   const url = typeof repoField === 'string' ? repoField : (repoField?.url || '')
   const match = url.match(/github\.com[/:]([^/]+\/[^/.]+)/)
-  return match ? match[1]!.replace(/\.git$/, '') : null
+  if (!match) return null
+  const repo = match[1]!.replace(/\.git$/, '')
+  if (!/^[a-zA-Z0-9._-]+\/[a-zA-Z0-9._-]+$/.test(repo)) return null
+  return repo
 }
 
 export async function fetchGithubRepo(repo: string) {
-  const token = process.env.GITHUB_TOKEN
+  const token = useRuntimeConfig().githubToken
   const headers: Record<string, string> = {}
   if (token) {
     headers['Authorization'] = `Bearer ${token}`
@@ -42,7 +45,7 @@ export async function fetchGithubRepo(repo: string) {
 }
 
 export async function fetchGithubReleases(repo: string) {
-  const token = process.env.GITHUB_TOKEN
+  const token = useRuntimeConfig().githubToken
   const headers: Record<string, string> = {}
   if (token) {
     headers['Authorization'] = `Bearer ${token}`

@@ -10,15 +10,16 @@ export default defineEventHandler(async (event) => {
 
   const query = getQuery(event)
   const ecosystem = (query.ecosystem as EcosystemId) || 'npm'
-  const decodedName = decodeURIComponent(name)
-  const curatedNames = getCuratedAlternatives(decodedName)
-
-  if (!curatedNames || curatedNames.length === 0) {
-    return { alternatives: [] }
-  }
 
   const resolver = getEcosystemResolver(ecosystem)
   if (!resolver) {
+    throw createError({ statusCode: 400, statusMessage: 'Unsupported ecosystem' })
+  }
+
+  const decodedName = validatePackageName(decodeURIComponent(name), ecosystem)
+  const curatedNames = getCuratedAlternatives(decodedName)
+
+  if (!curatedNames || curatedNames.length === 0) {
     return { alternatives: [] }
   }
 

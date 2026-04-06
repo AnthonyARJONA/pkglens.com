@@ -34,5 +34,11 @@ export function renderMarkdown(md: string): string {
   // Single newlines to <br> inside <p>
   html = html.replace(/([^>])\n([^<])/g, '$1<br>$2')
 
+  // Strip HTML tags not in allowlist
+  html = html.replace(/<\/?([a-zA-Z][a-zA-Z0-9]*)\b[^>]*>/g, (fullMatch, tagName) => {
+    const allowed = ['p', 'br', 'strong', 'em', 'h1', 'h2', 'h3', 'h4', 'ul', 'li', 'code', 'pre']
+    return allowed.includes(tagName.toLowerCase()) ? fullMatch : ''
+  })
+
   return html
 }

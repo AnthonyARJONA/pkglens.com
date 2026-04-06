@@ -14,10 +14,10 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'Package name is required' })
   }
 
-  const decodedName = decodeURIComponent(name)
+  const decodedName = validatePackageName(decodeURIComponent(name), 'npm')
   const registry = await fetchNpmRegistry(decodedName)
   if (!registry.data) {
-    throw createError({ statusCode: 404, statusMessage: `Package "${decodedName}" not found` })
+    throw createError({ statusCode: 404, statusMessage: 'Package not found' })
   }
 
   const reg = registry.data

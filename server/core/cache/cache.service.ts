@@ -17,78 +17,76 @@ const TTL: Record<string, number> = {
   'packagist-meta': 6 * 60 * 60 * 1000,  // 6h
 }
 
-const STALE_TTL = 24 * 60 * 60 * 1000 // 24h stale-while-revalidate
+const STALE_TTL = 24 * 60 * 60 * 1000
 
 export async function cachedFetch<T>(
-  source: string,
-  key: string,
-  fetcher: () => Promise<T>,
+  source: string, key: string, fetcher: () => Promise<T>,
 ): Promise<CacheEntry<T>> {
   const db = getDb()
   const cacheKey = `${source}:${key}`
   const now = Date.now()
-
-  // Check cache
   const row = db.prepare('SELECT data, fetched_at, expires_at FROM cache WHERE key = ?').get(cacheKey) as
     | { data: string; fetched_at: number; expires_at: number }
     | undefined
 
   if (row) {
+    let parsed: T
+    try {
+      parsed = JSON.parse(row.data)
+    } catch {
+      db.prepare('DELETE FROM cache WHERE key = ?').run(cacheKey)
+      // Fall through to fresh fetch
+      return fetchAndCache(source, cacheKey, fetcher, now)
+    }
+
     const isExpired = now > row.expires_at
     const isStale = now > row.expires_at + STALE_TTL
 
     if (!isExpired) {
-      return { data: JSON.parse(row.data), fetchedAt: row.fetched_at, stale: false }
+      return { data: parsed, fetchedAt: row.fetched_at, stale: false }
     }
 
-    // Expired but within stale window → serve stale + revalidate in background
     if (!isStale) {
-      // Fire and forget revalidation
       revalidate(source, cacheKey, fetcher).catch(() => {})
-      return { data: JSON.parse(row.data), fetchedAt: row.fetched_at, stale: true }
+      return { data: parsed, fetchedAt: row.fetched_at, stale: true }
     }
   }
 
-  // No cache or fully stale → fetch fresh
+  return fetchAndCache(source, cacheKey, fetcher, now, row)
+}
+
+async function fetchAndCache<T>(
+  source: string, cacheKey: string, fetcher: () => Promise<T>,
+  now: number, staleRow?: { data: string; fetched_at: number },
+): Promise<CacheEntry<T>> {
   try {
     const data = await fetcher()
-    const ttl = TTL[source] || 60 * 60 * 1000
-    const expiresAt = now + ttl
-
-    db.prepare(
-      'INSERT OR REPLACE INTO cache (key, data, fetched_at, expires_at) VALUES (?, ?, ?, ?)',
-    ).run(cacheKey, JSON.stringify(data), now, expiresAt)
-
+    const expiresAt = now + (TTL[source] || 60 * 60 * 1000)
+    getDb().prepare('INSERT OR REPLACE INTO cache (key, data, fetched_at, expires_at) VALUES (?, ?, ?, ?)')
+      .run(cacheKey, JSON.stringify(data), now, expiresAt)
     return { data, fetchedAt: now, stale: false }
   } catch (err) {
-    // If fetch fails and we have stale data, return it
-    if (row) {
-      return { data: JSON.parse(row.data), fetchedAt: row.fetched_at, stale: true }
+    if (staleRow) {
+      try {
+        return { data: JSON.parse(staleRow.data), fetchedAt: staleRow.fetched_at, stale: true }
+      } catch {
+        getDb().prepare('DELETE FROM cache WHERE key = ?').run(cacheKey)
+      }
     }
     throw err
   }
 }
 
-async function revalidate<T>(
-  source: string,
-  cacheKey: string,
-  fetcher: () => Promise<T>,
-): Promise<void> {
+async function revalidate<T>(source: string, cacheKey: string, fetcher: () => Promise<T>): Promise<void> {
   try {
     const data = await fetcher()
     const now = Date.now()
-    const ttl = TTL[source] || 60 * 60 * 1000
-    const expiresAt = now + ttl
-
-    getDb()
-      .prepare('INSERT OR REPLACE INTO cache (key, data, fetched_at, expires_at) VALUES (?, ?, ?, ?)')
+    const expiresAt = now + (TTL[source] || 60 * 60 * 1000)
+    getDb().prepare('INSERT OR REPLACE INTO cache (key, data, fetched_at, expires_at) VALUES (?, ?, ?, ?)')
       .run(cacheKey, JSON.stringify(data), now, expiresAt)
-  } catch {
-    // Revalidation failed silently — stale data continues to be served
-  }
+  } catch { /* stale data continues to be served */ }
 }
 
-// Cleanup expired entries (call periodically)
 export function cleanupCache(): void {
   const cutoff = Date.now() - STALE_TTL
   getDb().prepare('DELETE FROM cache WHERE expires_at < ?').run(cutoff)
