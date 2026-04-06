@@ -2,6 +2,7 @@ export interface PackageData {
   meta: {
     stale: boolean
     fetchedAt: string
+    ecosystem?: string
   }
   registry: RegistryData
   downloads: DownloadsData | null
@@ -33,6 +34,7 @@ export interface RegistryData {
   time: Record<string, string>
   distTags: Record<string, string>
   repository: { type: string; url: string } | string | null
+  installCommand?: string
   versions: {
     total: number
     stable: readonly VersionEntry[]

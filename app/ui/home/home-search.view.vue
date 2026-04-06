@@ -3,13 +3,16 @@ import type { SearchSuggestion } from '~/composables/use-search-suggestions'
 import type { EcosystemId } from '~/core/ecosystem/ecosystem.types'
 
 defineProps<{
-  quickLinks: string[]
+  quickLinks: Array<{ name: string; ecosystem: EcosystemId }>
   searchResults: readonly SearchSuggestion[]
+  activeEcosystem: EcosystemId
+  scanLabel: string
 }>()
 
 const emit = defineEmits<{
   search: [name: string, ecosystem: EcosystemId]
-  input: [query: string]
+  input: [query: string, ecosystem: EcosystemId]
+  ecosystemChange: [ecosystem: EcosystemId]
 }>()
 </script>
 
@@ -18,21 +21,21 @@ const emit = defineEmits<{
     <div class="hero-logo">pkg<span>lens</span></div>
     <p class="hero-tagline">
       See inside any package.<br>
-      Bundle size, dependencies, vulnerabilities, license &amp; health — all in one view.
+      Dependencies, vulnerabilities, license &amp; health — all in one view.
     </p>
 
     <SearchBarView
       variant="hero"
       :suggestions="searchResults"
       @search="(name, eco) => emit('search', name, eco)"
-      @input="(q) => emit('input', q)"
+      @input="(q, eco) => emit('input', q, eco)"
     />
 
     <div class="hero-or">or try</div>
     <div class="hero-suggestions">
-      <button v-for="pkg in quickLinks" :key="pkg" @click="emit('search', pkg, 'npm')">{{ pkg }}</button>
+      <button v-for="link in quickLinks" :key="link.name" @click="emit('search', link.name, link.ecosystem)">{{ link.name }}</button>
     </div>
-    <NuxtLink to="/scan" class="scan-link">Scan a package.json</NuxtLink>
+    <NuxtLink to="/scan" class="scan-link">{{ scanLabel }}</NuxtLink>
   </div>
 </template>
 

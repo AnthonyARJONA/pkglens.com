@@ -1,4 +1,5 @@
-import { fetchNpmRegistry, fetchNpmDownloads } from '../../ecosystems/npm/npm-registry.fetcher'
+import { getEcosystemResolver } from '../../core/ecosystems/ecosystem.factory'
+import type { EcosystemId } from '../../core/ecosystems/ecosystem.interface'
 import { getCuratedAlternatives } from '../../data/alternatives'
 
 export default defineEventHandler(async (event) => {
@@ -7,32 +8,35 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 400, statusMessage: 'Package name is required' })
   }
 
+  const query = getQuery(event)
+  const ecosystem = (query.ecosystem as EcosystemId) || 'npm'
   const decodedName = decodeURIComponent(name)
   const curatedNames = getCuratedAlternatives(decodedName)
+
   if (!curatedNames || curatedNames.length === 0) {
+    return { alternatives: [] }
+  }
+
+  const resolver = getEcosystemResolver(ecosystem)
+  if (!resolver) {
     return { alternatives: [] }
   }
 
   const results = await Promise.allSettled(
     curatedNames.map(async (altName) => {
-      const [regRes, dlRes] = await Promise.allSettled([
-        fetchNpmRegistry(altName),
-        fetchNpmDownloads(altName),
+      const [regRes, dlRes] = await Promise.all([
+        resolver.fetchRegistry(altName),
+        resolver.fetchDownloads(altName),
       ])
 
-      const reg = regRes.status === 'fulfilled' ? regRes.value.data : null
-      if (!reg) return null
-
-      const latestVersion = reg['dist-tags']?.latest || ''
-      const latestData = reg.versions?.[latestVersion]
-      const dl = dlRes.status === 'fulfilled' ? dlRes.value.data : null
+      if (!regRes.data) return null
 
       return {
         name: altName,
-        description: latestData?.description || reg.description || '',
-        version: latestVersion,
-        license: latestData?.license || reg.license || null,
-        weeklyDownloads: dl?.downloads ?? null,
+        description: regRes.data.description || '',
+        version: regRes.data.latestVersion,
+        license: regRes.data.license,
+        weeklyDownloads: dlRes.data?.weekly ?? null,
       }
     }),
   )

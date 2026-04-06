@@ -503,5 +503,168 @@
   "redis": [
     "ioredis",
     "@upstash/redis"
+  ],
+  "laravel/framework": [
+    "symfony/framework-bundle",
+    "cakephp/cakephp",
+    "slim/slim",
+    "yiisoft/yii2"
+  ],
+  "symfony/framework-bundle": [
+    "laravel/framework",
+    "cakephp/cakephp",
+    "slim/slim"
+  ],
+  "symfony/console": [
+    "laravel/artisan",
+    "symfony/process",
+    "webmozart/console"
+  ],
+  "symfony/http-client": [
+    "guzzlehttp/guzzle",
+    "php-http/curl-client",
+    "buzz/buzz"
+  ],
+  "guzzlehttp/guzzle": [
+    "symfony/http-client",
+    "php-http/curl-client",
+    "laminas/laminas-http"
+  ],
+  "monolog/monolog": [
+    "symfony/logger",
+    "analog/analog",
+    "katzgrau/klogger"
+  ],
+  "phpunit/phpunit": [
+    "pestphp/pest",
+    "codeception/codeception",
+    "behat/behat"
+  ],
+  "pestphp/pest": [
+    "phpunit/phpunit",
+    "codeception/codeception"
+  ],
+  "doctrine/orm": [
+    "cycle/orm",
+    "propel/propel",
+    "illuminate/database"
+  ],
+  "doctrine/dbal": [
+    "illuminate/database",
+    "cycle/database",
+    "atlas/atlas"
+  ],
+  "illuminate/database": [
+    "doctrine/orm",
+    "doctrine/dbal",
+    "cycle/orm"
+  ],
+  "twig/twig": [
+    "blade-ui-kit/blade-ui-kit",
+    "latte/latte",
+    "plates/plates"
+  ],
+  "league/flysystem": [
+    "gaufrette/gaufrette",
+    "knplabs/gaufrette"
+  ],
+  "vlucas/phpdotenv": [
+    "symfony/dotenv",
+    "josegonzalez/dotenv"
+  ],
+  "symfony/dotenv": [
+    "vlucas/phpdotenv",
+    "josegonzalez/dotenv"
+  ],
+  "predis/predis": [
+    "phpredis/phpredis",
+    "credis/credis"
+  ],
+  "php-amqplib/php-amqplib": [
+    "enqueue/amqp-ext",
+    "bernard/bernard"
+  ],
+  "league/oauth2-client": [
+    "socialiteproviders/manager",
+    "hybridauth/hybridauth"
+  ],
+  "spatie/laravel-permission": [
+    "silber/bouncer",
+    "laravelcollective/acl"
+  ],
+  "intervention/image": [
+    "imagine/imagine",
+    "spatie/image"
+  ],
+  "maatwebsite/excel": [
+    "phpoffice/phpspreadsheet",
+    "box/spout"
+  ],
+  "phpoffice/phpspreadsheet": [
+    "maatwebsite/excel",
+    "box/spout"
+  ],
+  "nette/nette": [
+    "symfony/framework-bundle",
+    "laravel/framework"
+  ],
+  "league/csv": [
+    "goodby/csv",
+    "keboola/csv"
+  ],
+  "ramsey/uuid": [
+    "symfony/uid",
+    "webpatser/laravel-uuid"
+  ],
+  "symfony/uid": [
+    "ramsey/uuid",
+    "ulid/ulid"
+  ],
+  "firebase/php-jwt": [
+    "lcobucci/jwt",
+    "web-token/jwt-framework"
+  ],
+  "lcobucci/jwt": [
+    "firebase/php-jwt",
+    "web-token/jwt-framework"
+  ],
+  "psr/log": [
+    "monolog/monolog",
+    "analog/analog"
+  ],
+  "psr/http-message": [
+    "guzzlehttp/psr7",
+    "nyholm/psr7",
+    "laminas/laminas-diactoros"
+  ],
+  "slim/slim": [
+    "laravel/framework",
+    "symfony/framework-bundle",
+    "mezzio/mezzio"
+  ],
+  "league/container": [
+    "php-di/php-di",
+    "symfony/dependency-injection",
+    "illuminate/container"
+  ],
+  "php-di/php-di": [
+    "league/container",
+    "symfony/dependency-injection"
+  ],
+  "symfony/mailer": [
+    "phpmailer/phpmailer",
+    "swiftmailer/swiftmailer"
+  ],
+  "phpmailer/phpmailer": [
+    "symfony/mailer",
+    "swiftmailer/swiftmailer"
+  ],
+  "fakerphp/faker": [
+    "nelmio/alice",
+    "fzaninotto/faker"
+  ],
+  "league/fractal": [
+    "spatie/laravel-resource-links",
+    "tobyz/json-api-server"
   ]
 }

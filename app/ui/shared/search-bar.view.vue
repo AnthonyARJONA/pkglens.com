@@ -10,7 +10,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   search: [name: string, ecosystem: EcosystemId]
-  input: [query: string]
+  input: [query: string, ecosystem: EcosystemId]
 }>()
 
 const query = ref('')
@@ -22,9 +22,9 @@ const activeEco = computed<EcosystemId>(() => userSelectedEco.value ?? detectedE
 const activeEcoMeta = computed(() => ECOSYSTEMS.find((e) => e.id === activeEco.value)!)
 
 function handleInput() {
-  emit('input', query.value)
-  showDropdown.value = true
   if (!userSelectedEco.value) detectedEco.value = detectEcosystem(query.value)
+  emit('input', query.value, activeEco.value)
+  showDropdown.value = true
 }
 
 function handleSearch() {

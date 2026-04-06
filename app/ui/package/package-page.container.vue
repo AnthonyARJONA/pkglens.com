@@ -17,6 +17,7 @@ const { suggestions, search: searchSuggestions } = useSearchSuggestions()
 const activeTab = ref<TabId>('deps')
 const installCopied = ref(false)
 const packageName = computed(() => decodeURIComponent(route.params.name as string))
+const ecosystem = computed(() => (route.query.eco as string) || 'npm')
 
 const headerVM = computed(() => data.value ? presentPackageHeader(data.value) : null)
 const depsVM = computed(() => data.value ? presentDepsPanel(data.value) : null)
@@ -25,10 +26,13 @@ const securityVM = computed(() => data.value ? presentSecurityPanel(data.value) 
 const changelogVM = computed(() => data.value ? presentChangelogPanel(data.value) : null)
 const alternativesVM = computed(() => presentAlternatives(alternatives.value))
 
-watch(() => route.params.name, () => { activeTab.value = 'deps'; fetchPackage(packageName.value) }, { immediate: true })
-watch(data, (pkg) => { if (pkg) fetchAlternatives(pkg.registry.name) })
+watch([() => route.params.name, () => route.query.eco], () => { activeTab.value = 'deps'; fetchPackage(packageName.value, ecosystem.value) }, { immediate: true })
+watch(data, (pkg) => { if (pkg) fetchAlternatives(pkg.registry.name, ecosystem.value) })
 
-function goToPackage(name: string) { router.push(`/package/${encodeURIComponent(name)}`) }
+function goToPackage(name: string, eco?: string) {
+  const query = eco && eco !== 'npm' ? { eco } : {}
+  router.push({ path: `/package/${encodeURIComponent(name)}`, query })
+}
 
 async function copyInstall() {
   if (!headerVM.value) return
@@ -44,7 +48,7 @@ useHead({ title: computed(() => data.value ? `${data.value.registry.name} — pk
   <header class="header">
     <div class="header-inner">
       <NuxtLink to="/" class="logo">pkg<span>lens</span></NuxtLink>
-      <SearchBarView variant="header" :suggestions="suggestions" @search="(name) => goToPackage(name)" @input="(q) => searchSuggestions(q)" />
+      <SearchBarView variant="header" :suggestions="suggestions" @search="(name, eco) => goToPackage(name, eco)" @input="(q, eco) => searchSuggestions(q, eco)" />
     </div>
   </header>
 
@@ -80,7 +84,7 @@ useHead({ title: computed(() => data.value ? `${data.value.registry.name} — pk
 
       <div class="tabs">
         <button class="tab" :class="{ active: activeTab === 'deps' }" @click="activeTab = 'deps'">Dependencies</button>
-        <button class="tab" :class="{ active: activeTab === 'bundle' }" @click="activeTab = 'bundle'">Bundle</button>
+        <button v-if="headerVM.hasBundle" class="tab" :class="{ active: activeTab === 'bundle' }" @click="activeTab = 'bundle'">Bundle</button>
         <button v-if="headerVM.vulnCount > 0" class="tab" :class="{ active: activeTab === 'security' }" @click="activeTab = 'security'">
           Security <span class="tab-badge tab-badge-red">{{ headerVM.vulnCount }}</span>
         </button>

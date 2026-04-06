@@ -6,7 +6,7 @@ export interface AlternativeData {
   weeklyDownloads: number | null
 }
 
-export async function fetchAlternatives(packageName: string): Promise<AlternativeData[]> {
-  const res = await $fetch<{ alternatives: AlternativeData[] }>(`/api/alternatives/${encodeURIComponent(packageName)}`)
+export async function fetchAlternatives(packageName: string, ecosystem: string = 'npm'): Promise<AlternativeData[]> {
+  const res = await $fetch<{ alternatives: AlternativeData[] }>(`/api/alternatives/${encodeURIComponent(packageName)}?ecosystem=${ecosystem}`)
   return res.alternatives
 }

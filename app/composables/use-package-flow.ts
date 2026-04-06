@@ -6,13 +6,13 @@ export function usePackageFlow() {
   const loading = ref(false)
   const error = ref<string | null>(null)
 
-  async function fetchPackage(name: string): Promise<void> {
+  async function fetchPackage(name: string, ecosystem: string = 'npm'): Promise<void> {
     loading.value = true
     error.value = null
     data.value = null
 
     try {
-      data.value = await fetchPackageData(name)
+      data.value = await fetchPackageData(name, ecosystem)
     } catch (err: unknown) {
       error.value = err instanceof Error ? err.message : 'Failed to fetch package'
     } finally {

@@ -40,6 +40,9 @@ const ECOSYSTEM_LINKS: Record<EcosystemId, (name: string, repo: string | null) =
       { label: 'Packagist', description: 'View on Packagist', href: `https://packagist.org/packages/${name}` },
     ]
     if (repo) links.push({ label: 'GitHub', description: 'View on GitHub', href: `https://github.com/${repo}` })
+    links.push(
+      { label: 'Snyk', description: 'Analyze security', href: `https://snyk.io/advisor/composer/${name}` },
+    )
     return links
   },
   go: (name, repo) => {

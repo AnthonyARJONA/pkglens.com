@@ -13,6 +13,8 @@ const TTL: Record<string, number> = {
   'osv-vulns': 60 * 60 * 1000,          // 1h
   'github-repo': 6 * 60 * 60 * 1000,    // 6h
   'github-releases': 12 * 60 * 60 * 1000, // 12h
+  'packagist-registry': 60 * 60 * 1000,  // 1h
+  'packagist-meta': 6 * 60 * 60 * 1000,  // 6h
 }
 
 const STALE_TTL = 24 * 60 * 60 * 1000 // 24h stale-while-revalidate

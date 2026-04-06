@@ -6,10 +6,10 @@ export function useAlternativesFlow() {
   const alternatives = ref<AlternativeInfo[]>([])
   const loading = ref(false)
 
-  async function load(packageName: string): Promise<void> {
+  async function load(packageName: string, ecosystem: string = 'npm'): Promise<void> {
     loading.value = true
     try {
-      alternatives.value = await fetchAlternatives(packageName)
+      alternatives.value = await fetchAlternatives(packageName, ecosystem)
     } catch {
       alternatives.value = []
     } finally {
