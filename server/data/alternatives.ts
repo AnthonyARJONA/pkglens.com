@@ -1199,6 +1199,279 @@ export const CURATED_ALTERNATIVES: Record<string, string[]> = {
   // --- PHP Testing Fixtures ---
   'liip/test-fixtures-bundle': ['doctrine/data-fixtures'],
   'doctrine/data-fixtures': ['liip/test-fixtures-bundle'],
+
+  // ============================================================
+  // PYPI PACKAGES
+  // ============================================================
+
+  // --- Python Web Frameworks ---
+  'django': ['flask', 'fastapi', 'tornado', 'sanic', 'starlette', 'litestar'],
+  'flask': ['django', 'fastapi', 'tornado', 'sanic', 'starlette', 'bottle'],
+  'fastapi': ['flask', 'django', 'starlette', 'litestar', 'sanic', 'tornado'],
+  'tornado': ['flask', 'django', 'fastapi', 'sanic', 'twisted'],
+  'sanic': ['fastapi', 'flask', 'tornado', 'starlette', 'litestar'],
+  'starlette': ['fastapi', 'flask', 'sanic', 'litestar'],
+  'litestar': ['fastapi', 'starlette', 'sanic', 'flask'],
+  'bottle': ['flask', 'django', 'falcon', 'cherrypy'],
+  'falcon': ['flask', 'fastapi', 'bottle', 'starlette'],
+  'cherrypy': ['flask', 'bottle', 'falcon', 'tornado'],
+  'pyramid': ['django', 'flask', 'falcon'],
+  'twisted': ['tornado', 'asyncio', 'trio'],
+
+  // --- Python HTTP Clients ---
+  'requests': ['httpx', 'aiohttp', 'urllib3', 'httplib2', 'pycurl'],
+  'httpx': ['requests', 'aiohttp', 'urllib3'],
+  'aiohttp': ['httpx', 'requests', 'tornado', 'urllib3'],
+  'urllib3': ['requests', 'httpx', 'aiohttp'],
+  'httplib2': ['requests', 'httpx', 'urllib3'],
+  'pycurl': ['requests', 'httpx', 'urllib3'],
+
+  // --- Python ORMs & Database ---
+  'sqlalchemy': ['tortoise-orm', 'peewee', 'pony', 'django'],
+  'tortoise-orm': ['sqlalchemy', 'peewee', 'pony', 'django'],
+  'peewee': ['sqlalchemy', 'tortoise-orm', 'pony'],
+  'pony': ['sqlalchemy', 'peewee', 'tortoise-orm'],
+  'sqlmodel': ['sqlalchemy', 'tortoise-orm', 'peewee'],
+  'alembic': ['django', 'yoyo-migrations'],
+
+  // --- Python Database Drivers ---
+  'psycopg2': ['asyncpg', 'psycopg', 'psycopg2-binary'],
+  'psycopg2-binary': ['psycopg2', 'asyncpg', 'psycopg'],
+  'psycopg': ['psycopg2', 'asyncpg', 'psycopg2-binary'],
+  'asyncpg': ['psycopg2', 'psycopg', 'aiopg'],
+  'aiopg': ['asyncpg', 'psycopg', 'psycopg2'],
+  'pymongo': ['motor', 'mongoengine', 'mongomock'],
+  'motor': ['pymongo', 'mongoengine'],
+  'mongoengine': ['pymongo', 'motor', 'mongomock'],
+  'aioredis': ['redis', 'fakeredis'],
+  'aiomysql': ['pymysql', 'mysqlclient', 'asyncmy'],
+  'pymysql': ['aiomysql', 'mysqlclient', 'asyncmy'],
+  'mysqlclient': ['pymysql', 'aiomysql'],
+
+  // --- Python Testing ---
+  'pytest': ['nose2', 'hypothesis', 'ward'],
+  'nose2': ['pytest', 'hypothesis'],
+  'hypothesis': ['pytest', 'faker', 'factory-boy'],
+  'factory-boy': ['faker', 'hypothesis', 'model-bakery'],
+  'mimesis': ['faker', 'factory-boy'],
+  'pytest-cov': ['coverage', 'pytest-xdist'],
+  'coverage': ['pytest-cov'],
+  'tox': ['nox', 'pytest'],
+  'nox': ['tox', 'pytest'],
+  'responses': ['requests-mock', 'httpretty', 'respx'],
+  'requests-mock': ['responses', 'httpretty', 'respx'],
+  'respx': ['responses', 'requests-mock', 'httpretty'],
+  'httpretty': ['responses', 'requests-mock', 'respx'],
+  'ward': ['pytest', 'nose2'],
+
+  // --- Python Data Science ---
+  'pandas': ['polars', 'dask', 'modin', 'vaex', 'pyarrow'],
+  'polars': ['pandas', 'dask', 'modin', 'vaex'],
+  'numpy': ['scipy', 'jax', 'cupy'],
+  'scipy': ['numpy', 'jax', 'statsmodels'],
+  'dask': ['pandas', 'polars', 'modin', 'vaex', 'ray'],
+  'modin': ['pandas', 'polars', 'dask', 'vaex'],
+  'vaex': ['pandas', 'polars', 'dask', 'modin'],
+  'pyarrow': ['pandas', 'polars', 'fastparquet'],
+  'fastparquet': ['pyarrow', 'pandas'],
+
+  // --- Python ML / AI ---
+  'scikit-learn': ['xgboost', 'lightgbm', 'catboost', 'tensorflow', 'torch'],
+  'tensorflow': ['torch', 'jax', 'keras', 'scikit-learn'],
+  'torch': ['tensorflow', 'jax', 'keras', 'scikit-learn'],
+  'keras': ['tensorflow', 'torch', 'jax'],
+  'jax': ['torch', 'tensorflow', 'numpy'],
+  'xgboost': ['lightgbm', 'catboost', 'scikit-learn'],
+  'lightgbm': ['xgboost', 'catboost', 'scikit-learn'],
+  'catboost': ['xgboost', 'lightgbm', 'scikit-learn'],
+  'transformers': ['spacy', 'flair', 'sentence-transformers'],
+  'spacy': ['transformers', 'nltk', 'flair', 'stanza'],
+  'nltk': ['spacy', 'transformers', 'textblob'],
+  'flair': ['spacy', 'transformers', 'stanza'],
+  'stanza': ['spacy', 'flair', 'nltk'],
+  'sentence-transformers': ['transformers', 'spacy'],
+  'langchain': ['llama-index', 'haystack-ai', 'semantic-kernel'],
+  'llama-index': ['langchain', 'haystack-ai'],
+  'openai': ['anthropic', 'cohere', 'google-generativeai'],
+  'anthropic': ['openai', 'cohere', 'google-generativeai'],
+
+  // --- Python CLI ---
+  'click': ['typer', 'fire', 'rich', 'cement'],
+  'typer': ['click', 'fire', 'rich'],
+  'fire': ['click', 'typer', 'rich'],
+  'rich': ['click', 'typer', 'tqdm', 'colorama'],
+  'tqdm': ['rich', 'alive-progress', 'progressbar2'],
+  'alive-progress': ['tqdm', 'rich', 'progressbar2'],
+  'colorama': ['rich', 'termcolor', 'colored'],
+  'termcolor': ['colorama', 'rich', 'colored'],
+
+  // --- Python Async ---
+  'trio': ['anyio', 'asyncio', 'uvloop', 'curio'],
+  'anyio': ['trio', 'asyncio', 'uvloop'],
+  'uvloop': ['asyncio', 'trio', 'anyio'],
+
+  // --- Python Serialization & Validation ---
+  'pydantic': ['marshmallow', 'attrs', 'cattrs', 'dataclasses-json'],
+  'marshmallow': ['pydantic', 'attrs', 'cattrs', 'cerberus'],
+  'attrs': ['pydantic', 'dataclasses', 'cattrs'],
+  'cattrs': ['attrs', 'pydantic', 'marshmallow'],
+  'cerberus': ['marshmallow', 'pydantic', 'voluptuous'],
+  'voluptuous': ['cerberus', 'marshmallow', 'pydantic'],
+  'dataclasses-json': ['pydantic', 'marshmallow', 'cattrs'],
+
+  // --- Python Task Queues ---
+  'celery': ['rq', 'huey', 'dramatiq', 'arq'],
+  'rq': ['celery', 'huey', 'dramatiq', 'arq'],
+  'huey': ['celery', 'rq', 'dramatiq'],
+  'dramatiq': ['celery', 'rq', 'huey', 'arq'],
+  'arq': ['celery', 'rq', 'dramatiq'],
+
+  // --- Python Templating ---
+  'jinja2': ['mako', 'chameleon', 'django'],
+  'mako': ['jinja2', 'chameleon'],
+  'chameleon': ['jinja2', 'mako'],
+
+  // --- Python Auth & Security ---
+  'authlib': ['python-jose', 'pyjwt', 'oauthlib'],
+  'python-jose': ['authlib', 'pyjwt', 'jwcrypto'],
+  'pyjwt': ['python-jose', 'authlib', 'jwcrypto'],
+  'oauthlib': ['authlib', 'requests-oauthlib'],
+  'passlib': ['bcrypt', 'argon2-cffi'],
+  'argon2-cffi': ['passlib', 'bcrypt'],
+  'cryptography': ['pynacl', 'pyopenssl'],
+  'pynacl': ['cryptography', 'pyopenssl'],
+
+  // --- Python Image Processing ---
+  'pillow': ['opencv-python', 'scikit-image', 'wand'],
+  'opencv-python': ['pillow', 'scikit-image', 'imageio'],
+  'scikit-image': ['pillow', 'opencv-python', 'imageio'],
+  'imageio': ['pillow', 'opencv-python', 'scikit-image'],
+  'wand': ['pillow', 'opencv-python'],
+
+  // --- Python PDF ---
+  'reportlab': ['fpdf2', 'weasyprint', 'pdfkit', 'borb'],
+  'fpdf2': ['reportlab', 'weasyprint', 'pdfkit'],
+  'weasyprint': ['reportlab', 'fpdf2', 'pdfkit', 'xhtml2pdf'],
+  'xhtml2pdf': ['weasyprint', 'reportlab', 'fpdf2'],
+  'pypdf': ['pymupdf', 'pdfplumber', 'pdfminer-six'],
+  'pymupdf': ['pypdf', 'pdfplumber', 'pdfminer-six'],
+  'pdfplumber': ['pypdf', 'pymupdf', 'pdfminer-six'],
+  'pdfminer-six': ['pypdf', 'pymupdf', 'pdfplumber'],
+
+  // --- Python Scraping ---
+  'beautifulsoup4': ['scrapy', 'lxml', 'parsel', 'selectolax'],
+  'scrapy': ['beautifulsoup4', 'selenium', 'playwright', 'httpx'],
+  'selenium': ['playwright', 'scrapy', 'splinter'],
+  'lxml': ['beautifulsoup4', 'parsel', 'selectolax', 'html5lib'],
+  'parsel': ['beautifulsoup4', 'lxml', 'selectolax'],
+  'selectolax': ['beautifulsoup4', 'lxml', 'parsel'],
+
+  // --- Python API Frameworks ---
+  'djangorestframework': ['django-ninja', 'fastapi', 'flask-restful'],
+  'django-ninja': ['djangorestframework', 'fastapi', 'flask-restful'],
+  'flask-restful': ['djangorestframework', 'django-ninja', 'fastapi', 'flask-restx'],
+  'flask-restx': ['flask-restful', 'djangorestframework', 'fastapi'],
+
+  // --- Python Config ---
+  'python-dotenv': ['pydantic-settings', 'dynaconf', 'environs'],
+  'pydantic-settings': ['python-dotenv', 'dynaconf', 'environs'],
+  'dynaconf': ['python-dotenv', 'pydantic-settings', 'environs'],
+  'environs': ['python-dotenv', 'pydantic-settings', 'dynaconf'],
+
+  // --- Python Logging ---
+  'loguru': ['structlog', 'eliot'],
+  'structlog': ['loguru', 'eliot'],
+
+  // --- Python Linting & Formatting ---
+  'ruff': ['flake8', 'pylint', 'black', 'isort'],
+  'flake8': ['ruff', 'pylint', 'pyflakes', 'pycodestyle'],
+  'pylint': ['ruff', 'flake8', 'pyflakes'],
+  'black': ['ruff', 'autopep8', 'yapf', 'blue'],
+  'isort': ['ruff', 'usort'],
+  'autopep8': ['black', 'ruff', 'yapf'],
+  'yapf': ['black', 'autopep8', 'ruff'],
+
+  // --- Python Type Checking ---
+  'mypy': ['pyright', 'pytype', 'pyre-check'],
+  'pyright': ['mypy', 'pytype', 'pyre-check'],
+  'pytype': ['mypy', 'pyright'],
+
+  // --- Python Packaging ---
+  'setuptools': ['poetry', 'flit', 'hatch', 'pdm', 'maturin'],
+  'poetry': ['setuptools', 'flit', 'hatch', 'pdm'],
+  'flit': ['setuptools', 'poetry', 'hatch', 'pdm'],
+  'hatch': ['setuptools', 'poetry', 'flit', 'pdm'],
+  'pdm': ['setuptools', 'poetry', 'flit', 'hatch'],
+  'maturin': ['setuptools', 'pyo3'],
+  'twine': ['flit', 'poetry', 'hatch'],
+
+  // --- Python Caching ---
+  'cachetools': ['diskcache', 'aiocache', 'dogpile-cache'],
+  'diskcache': ['cachetools', 'aiocache', 'dogpile-cache'],
+  'aiocache': ['cachetools', 'diskcache'],
+
+  // --- Python Date / Time ---
+  'arrow': ['pendulum', 'python-dateutil', 'delorean'],
+  'pendulum': ['arrow', 'python-dateutil', 'delorean'],
+  'python-dateutil': ['arrow', 'pendulum'],
+
+  // --- Python WebSocket ---
+  'websockets': ['channels', 'python-socketio', 'wsproto'],
+  'channels': ['websockets', 'python-socketio'],
+  'python-socketio': ['websockets', 'channels'],
+
+  // --- Python GraphQL ---
+  'graphene': ['strawberry-graphql', 'ariadne', 'graphql-core'],
+  'strawberry-graphql': ['graphene', 'ariadne', 'graphql-core'],
+  'ariadne': ['graphene', 'strawberry-graphql', 'graphql-core'],
+
+  // --- Python Static Site / Docs ---
+  'mkdocs': ['sphinx', 'pdoc', 'pydoc-markdown'],
+  'sphinx': ['mkdocs', 'pdoc', 'pydoc-markdown'],
+  'pdoc': ['mkdocs', 'sphinx'],
+
+  // --- Python Data Visualization ---
+  'matplotlib': ['plotly', 'seaborn', 'altair', 'bokeh'],
+  'plotly': ['matplotlib', 'seaborn', 'altair', 'bokeh', 'dash'],
+  'seaborn': ['matplotlib', 'plotly', 'altair'],
+  'altair': ['matplotlib', 'plotly', 'seaborn', 'bokeh'],
+  'bokeh': ['matplotlib', 'plotly', 'altair', 'holoviews'],
+  'dash': ['plotly', 'streamlit', 'gradio', 'panel'],
+  'streamlit': ['dash', 'gradio', 'panel', 'nicegui'],
+  'gradio': ['streamlit', 'dash', 'panel'],
+
+  // --- Python File Handling ---
+  'openpyxl': ['xlsxwriter', 'xlrd', 'pandas'],
+  'xlsxwriter': ['openpyxl', 'xlrd', 'pandas'],
+  'python-docx': ['docxtpl', 'python-pptx'],
+  'python-pptx': ['python-docx'],
+  'pyyaml': ['ruamel-yaml', 'strictyaml'],
+  'ruamel-yaml': ['pyyaml', 'strictyaml'],
+  'tomli': ['toml', 'tomllib'],
+  'orjson': ['ujson', 'rapidjson', 'simplejson'],
+  'ujson': ['orjson', 'rapidjson', 'simplejson'],
+  'simplejson': ['orjson', 'ujson'],
+
+  // --- Python Email ---
+  'sendgrid': ['mailgun', 'boto3', 'python-postmark'],
+  'python-multipart': ['streaming-form-data'],
+
+  // --- Python Dependency Injection ---
+  'dependency-injector': ['injector', 'python-inject'],
+  'injector': ['dependency-injector', 'python-inject'],
+
+  // --- Python Profiling ---
+  'py-spy': ['scalene', 'yappi', 'line-profiler'],
+  'scalene': ['py-spy', 'yappi', 'line-profiler'],
+  'yappi': ['py-spy', 'scalene', 'line-profiler'],
+
+  // --- Python ASGI Servers ---
+  'uvicorn': ['hypercorn', 'daphne', 'granian'],
+  'hypercorn': ['uvicorn', 'daphne', 'granian'],
+  'daphne': ['uvicorn', 'hypercorn'],
+  'granian': ['uvicorn', 'hypercorn'],
+  'gunicorn': ['uvicorn', 'hypercorn', 'waitress'],
+  'waitress': ['gunicorn', 'uvicorn'],
 }
 
 export function getCuratedAlternatives(name: string): string[] | null {

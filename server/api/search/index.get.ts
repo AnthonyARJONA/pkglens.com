@@ -14,7 +14,9 @@ export default defineEventHandler(async (event) => {
 
   if (q.length < 2 || q.length > 100) return { results: [] }
 
-  if (!['npm', 'packagist'].includes(ecosystem)) return { results: [] }
+  if (!['npm', 'packagist', 'pypi'].includes(ecosystem)) return { results: [] }
+
+  if (ecosystem === 'pypi') return { results: [] }
 
   if (ecosystem === 'packagist') {
     return searchPackagist(q, size)

@@ -1,6 +1,7 @@
 import type { EcosystemId } from './ecosystem.interface'
 import { parsePackageJson } from '../../ecosystems/npm/npm-file.parser'
 import { parseComposerJson } from '../../ecosystems/packagist/packagist-file.parser'
+import { parseRequirementsTxt } from '../../ecosystems/pypi/pypi-file.parser'
 
 export interface DetectedFile {
   ecosystem: EcosystemId
@@ -18,6 +19,10 @@ export function detectAndParse(content: string, filename: string | null): Detect
     }
     if (lower === 'composer.json' || lower.endsWith('/composer.json')) {
       const result = parseComposerJson(content)
+      if (result) return result
+    }
+    if (lower.includes('requirements') && lower.endsWith('.txt')) {
+      const result = parseRequirementsTxt(content)
       if (result) return result
     }
   }
@@ -42,7 +47,9 @@ export function detectAndParse(content: string, filename: string | null): Detect
       if (result) return result
     }
   } catch {
-    // Not JSON — could be requirements.txt, Cargo.toml, go.mod in the future
+    // Not JSON — try line-based formats
+    const result = parseRequirementsTxt(content)
+    if (result) return result
   }
 
   return null

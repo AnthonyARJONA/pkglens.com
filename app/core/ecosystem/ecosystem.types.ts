@@ -12,6 +12,7 @@ export interface EcosystemMeta {
 export const ECOSYSTEMS: EcosystemMeta[] = [
   { id: 'npm', label: 'npm', placeholder: 'Search npm packages…', available: true },
   { id: 'packagist', label: 'Packagist', placeholder: 'Search PHP packages…', available: true },
+  { id: 'pypi', label: 'PyPI', placeholder: 'Type a Python package name…', available: true },
 ]
 
 export function detectEcosystem(query: string): EcosystemId | null {

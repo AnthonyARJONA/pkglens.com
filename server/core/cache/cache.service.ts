@@ -15,6 +15,8 @@ const TTL: Record<string, number> = {
   'github-releases': 12 * 60 * 60 * 1000, // 12h
   'packagist-registry': 60 * 60 * 1000,  // 1h
   'packagist-meta': 6 * 60 * 60 * 1000,  // 6h
+  'pypi-registry': 60 * 60 * 1000,       // 1h
+  'pypi-downloads': 6 * 60 * 60 * 1000,  // 6h
 }
 
 const STALE_TTL = 24 * 60 * 60 * 1000
