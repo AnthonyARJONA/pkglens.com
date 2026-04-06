@@ -63,5 +63,6 @@ useHead({ title: 'pkglens — see inside your packages' })
     :scan-label="scanLabel"
     @search="handleSearch"
     @input="handleInput"
+    @ecosystem-change="(eco) => activeEco = eco"
   />
 </template>

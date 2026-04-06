@@ -29,6 +29,7 @@ const emit = defineEmits<{
       :suggestions="searchResults"
       @search="(name, eco) => emit('search', name, eco)"
       @input="(q, eco) => emit('input', q, eco)"
+      @ecosystem-change="(eco) => emit('ecosystemChange', eco)"
     />
 
     <div class="hero-or">or try</div>

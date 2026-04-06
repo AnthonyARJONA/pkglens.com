@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { TabId } from '~/core/package/package.types'
+import type { EcosystemId } from '~/core/ecosystem/ecosystem.types'
 import { COPY_FEEDBACK_MS } from '~/core/constants'
 import { presentPackageHeader } from '~/presenters/package-header.presenter'
 import { presentDepsPanel } from '~/presenters/deps-panel.presenter'
@@ -17,7 +18,7 @@ const { suggestions, search: searchSuggestions } = useSearchSuggestions()
 const activeTab = ref<TabId>('deps')
 const installCopied = ref(false)
 const packageName = computed(() => decodeURIComponent(route.params.name as string))
-const ecosystem = computed(() => (route.query.eco as string) || 'npm')
+const ecosystem = computed(() => (route.query.eco as EcosystemId) || 'npm' as EcosystemId)
 
 const headerVM = computed(() => data.value ? presentPackageHeader(data.value) : null)
 const depsVM = computed(() => data.value ? presentDepsPanel(data.value) : null)
@@ -30,7 +31,8 @@ watch([() => route.params.name, () => route.query.eco], () => { activeTab.value 
 watch(data, (pkg) => { if (pkg) fetchAlternatives(pkg.registry.name, ecosystem.value) })
 
 function goToPackage(name: string, eco?: string) {
-  const query = eco && eco !== 'npm' ? { eco } : {}
+  const effectiveEco = eco || ecosystem.value
+  const query = effectiveEco && effectiveEco !== 'npm' ? { eco: effectiveEco } : {}
   router.push({ path: `/package/${encodeURIComponent(name)}`, query })
 }
 
@@ -48,7 +50,7 @@ useHead({ title: computed(() => data.value ? `${data.value.registry.name} — pk
   <header class="header">
     <div class="header-inner">
       <NuxtLink to="/" class="logo">pkg<span>lens</span></NuxtLink>
-      <SearchBarView variant="header" :suggestions="suggestions" @search="(name, eco) => goToPackage(name, eco)" @input="(q, eco) => searchSuggestions(q, eco)" />
+      <SearchBarView variant="header" :suggestions="suggestions" :initial-ecosystem="ecosystem" @search="(name, eco) => goToPackage(name, eco)" @input="(q, eco) => searchSuggestions(q, eco)" />
     </div>
   </header>
 

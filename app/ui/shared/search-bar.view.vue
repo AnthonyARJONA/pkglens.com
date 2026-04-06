@@ -6,11 +6,13 @@ import type { SearchSuggestion } from '~/composables/use-search-suggestions'
 const props = defineProps<{
   suggestions: readonly SearchSuggestion[]
   variant: 'header' | 'hero'
+  initialEcosystem?: EcosystemId
 }>()
 
 const emit = defineEmits<{
   search: [name: string, ecosystem: EcosystemId]
   input: [query: string, ecosystem: EcosystemId]
+  ecosystemChange: [ecosystem: EcosystemId]
 }>()
 
 const query = ref('')
@@ -18,7 +20,7 @@ const showDropdown = ref(false)
 const userSelectedEco = ref<EcosystemId | null>(null)
 const detectedEco = ref<EcosystemId | null>(null)
 
-const activeEco = computed<EcosystemId>(() => userSelectedEco.value ?? detectedEco.value ?? 'npm')
+const activeEco = computed<EcosystemId>(() => userSelectedEco.value ?? detectedEco.value ?? props.initialEcosystem ?? 'npm')
 const activeEcoMeta = computed(() => ECOSYSTEMS.find((e) => e.id === activeEco.value)!)
 
 function handleInput() {
@@ -51,7 +53,7 @@ onUnmounted(() => document.removeEventListener('keydown', onKeydown))
 
 <template>
   <div class="search-bar" :class="{ 'is-hero': variant === 'hero' }" @focusin="showDropdown = true" @focusout="delayHide()">
-    <EcosystemSelectorView :active-id="activeEco" :active-label="activeEcoMeta.label" @select="(id) => userSelectedEco = id" />
+    <EcosystemSelectorView :active-id="activeEco" :active-label="activeEcoMeta.label" @select="(id) => { userSelectedEco = id; emit('ecosystemChange', id) }" />
     <div class="divider" />
     <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" /></svg>
     <input v-model="query" class="search-bar-input" type="text" :placeholder="activeEcoMeta.placeholder" autocomplete="off" spellcheck="false" :autofocus="variant === 'hero'" @input="handleInput" @keydown.enter="handleSearch">
