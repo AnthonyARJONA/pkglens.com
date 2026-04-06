@@ -3,9 +3,14 @@ import type { PackageData } from '~/core/package/package.types'
 export interface DepRowViewModel {
   name: string
   version: string
+  versionClean: string
   prefix: string
   badgeLabel: string
   badgeClass: string
+}
+
+function stripSemverPrefix(range: string): string {
+  return range.replace(/^[\^~>=<\s]+/, '').split(' ')[0] || range
 }
 
 export interface DepsPanelViewModel {
@@ -25,6 +30,7 @@ export function presentDepsPanel(data: PackageData): DepsPanelViewModel {
   const deps: DepRowViewModel[] = depsEntries.map(([name, version], i) => ({
     name,
     version,
+    versionClean: stripSemverPrefix(version),
     prefix: i === depsEntries.length - 1 && peerEntries.length === 0 ? '└── ' : '├── ',
     badgeLabel: 'dep',
     badgeClass: 'badge-ok',
@@ -33,6 +39,7 @@ export function presentDepsPanel(data: PackageData): DepsPanelViewModel {
   const peers: DepRowViewModel[] = peerEntries.map(([name, version], i) => ({
     name,
     version,
+    versionClean: stripSemverPrefix(version),
     prefix: i === peerEntries.length - 1 ? '└── ' : '├── ',
     badgeLabel: 'peer',
     badgeClass: 'badge-peer',

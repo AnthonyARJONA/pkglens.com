@@ -100,7 +100,7 @@ useHead({ title: computed(() => data.value ? `${data.value.registry.name} — pk
         <button class="tab" :class="{ active: activeTab === 'alternatives' }" @click="activeTab = 'alternatives'">Alternatives</button>
       </div>
 
-      <DepsPanelView v-if="activeTab === 'deps' && depsVM" v-bind="depsVM" @navigate="goToPackage" />
+      <DepsPanelView v-if="activeTab === 'deps' && depsVM" v-bind="depsVM" @navigate="(name, ver) => goToPackage(name, undefined, ver)" />
       <BundlePanelView v-if="activeTab === 'bundle' && bundleVM" v-bind="bundleVM" />
       <SecurityPanelView v-if="activeTab === 'security' && securityVM" v-bind="securityVM" />
       <ChangelogPanelView v-if="activeTab === 'changelog' && changelogVM" v-bind="changelogVM" />

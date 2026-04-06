@@ -2,7 +2,7 @@
 import type { DepsPanelViewModel } from '~/presenters/deps-panel.presenter'
 
 const props = defineProps<DepsPanelViewModel>()
-const emit = defineEmits<{ navigate: [name: string] }>()
+const emit = defineEmits<{ navigate: [name: string, version?: string] }>()
 
 const showAll = ref(false)
 const displayedDeps = computed(() => showAll.value ? props.allDeps : props.visibleDeps)
@@ -18,7 +18,7 @@ const displayedDeps = computed(() => showAll.value ? props.allDeps : props.visib
       </div>
       <div v-for="dep in displayedDeps" :key="dep.name" class="dep-row">
         <span class="dep-prefix">{{ dep.prefix }}</span>
-        <span class="dep-link" @click="emit('navigate', dep.name)">{{ dep.name }}</span>
+        <span class="dep-link" @click="emit('navigate', dep.name, dep.versionClean)">{{ dep.name }}</span>
         <span class="dep-version">{{ dep.version }}</span>
         <span class="badge" :class="dep.badgeClass">{{ dep.badgeLabel }}</span>
       </div>
