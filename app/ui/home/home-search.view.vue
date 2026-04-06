@@ -103,7 +103,7 @@ function openFileDialog() {
           <p>Compare with hand-picked alternatives. See how your chosen package stacks up in downloads, bundle size, and security.</p>
         </div>
       </div>
-      <p class="seo-ecosystems">Supports <strong>npm</strong> and <strong>Composer</strong> packages. PyPI, Cargo, and Go coming soon.</p>
+      <p class="seo-ecosystems">Supports <strong>npm</strong> and <strong>Composer</strong> packages.</p>
     </section>
   </div>
 </template>

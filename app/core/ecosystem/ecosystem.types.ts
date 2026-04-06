@@ -11,14 +11,11 @@ export interface EcosystemMeta {
 
 export const ECOSYSTEMS: EcosystemMeta[] = [
   { id: 'npm', label: 'npm', placeholder: 'Search npm packages…', available: true },
-  { id: 'pypi', label: 'PyPI', placeholder: 'Search Python packages…', available: false },
-  { id: 'cargo', label: 'Cargo', placeholder: 'Search Rust crates…', available: false },
   { id: 'packagist', label: 'Packagist', placeholder: 'Search PHP packages…', available: true },
-  { id: 'go', label: 'Go', placeholder: 'Search Go modules…', available: false },
 ]
 
 export function detectEcosystem(query: string): EcosystemId | null {
   if (query.startsWith('@') && query.includes('/')) return 'npm'
-  if (query.includes('/') && !query.startsWith('@')) return 'go'
+  if (query.includes('/') && !query.startsWith('@')) return 'packagist'
   return null
 }
