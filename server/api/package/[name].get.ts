@@ -23,6 +23,9 @@ export default defineEventHandler(async (event) => {
 
   const reg = registry.data
   const requestedVersion = String(getQuery(event).version || '')
+  if (requestedVersion && (requestedVersion.length > 50 || !/^[a-zA-Z0-9._-]+$/.test(requestedVersion))) {
+    throw createError({ statusCode: 400, statusMessage: 'Invalid version parameter' })
+  }
   let latestVersion = reg['dist-tags']?.latest || Object.keys(reg.versions || {}).pop() || ''
 
   // Support specific version via query param

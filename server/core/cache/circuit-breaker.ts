@@ -13,8 +13,9 @@ export function isCircuitOpen(source: string): boolean {
   const state = breakers.get(source)
   if (!state || !state.open) return false
 
-  // Check if reset timeout has passed
-  if (Date.now() - state.lastFailure > RESET_TIMEOUT) {
+  // Add jitter so reset time is unpredictable
+  const jitter = Math.random() * RESET_TIMEOUT * 0.3
+  if (Date.now() - state.lastFailure > RESET_TIMEOUT + jitter) {
     state.open = false
     state.failures = 0
     return false

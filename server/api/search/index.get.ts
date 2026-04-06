@@ -1,5 +1,3 @@
-import { fetchSafe } from '../../core/fetcher/safe-fetcher'
-
 interface NpmSearchResponse {
   objects: Array<{ package: { name: string; description: string; version: string } }>
 }
@@ -26,14 +24,16 @@ export default defineEventHandler(async (event) => {
 })
 
 async function searchNpm(q: string, size: number) {
-  const result = await fetchSafe<NpmSearchResponse>({
-    source: 'npm-registry',
-    cacheKey: `search:${q}:${size}`,
-    url: `https://registry.npmjs.org/-/v1/search?text=${encodeURIComponent(q)}&size=${size}`,
+  const url = `https://registry.npmjs.org/-/v1/search?text=${encodeURIComponent(q)}&size=${size}`
+  const res = await fetch(url, {
+    headers: { 'Accept': 'application/json' },
+    signal: AbortSignal.timeout(10_000),
   })
+  if (!res.ok) return { results: [] }
+  const data = (await res.json()) as NpmSearchResponse
 
   return {
-    results: (result.data?.objects || []).map((o) => ({
+    results: (data?.objects || []).map((o) => ({
       name: o.package.name,
       description: (o.package.description || '').slice(0, 80),
       version: o.package.version,
@@ -42,14 +42,16 @@ async function searchNpm(q: string, size: number) {
 }
 
 async function searchPackagist(q: string, size: number) {
-  const result = await fetchSafe<PackagistSearchResponse>({
-    source: 'packagist-meta',
-    cacheKey: `search:${q}:${size}`,
-    url: `https://packagist.org/search.json?q=${encodeURIComponent(q)}&per_page=${size}`,
+  const url = `https://packagist.org/search.json?q=${encodeURIComponent(q)}&per_page=${size}`
+  const res = await fetch(url, {
+    headers: { 'Accept': 'application/json' },
+    signal: AbortSignal.timeout(10_000),
   })
+  if (!res.ok) return { results: [] }
+  const data = (await res.json()) as PackagistSearchResponse
 
   return {
-    results: (result.data?.results || []).map((r) => ({
+    results: (data?.results || []).map((r) => ({
       name: r.name,
       description: (r.description || '').slice(0, 80),
       version: '',

@@ -31,10 +31,8 @@ export function useScanFlow() {
     result.value = null
 
     try {
-      result.value = await $fetch<ScanResult>('/api/scan', {
-        method: 'POST',
-        body: { content, filename },
-      })
+      const { fetchScanResults } = await import('../gateway/scan.gateway')
+      result.value = await fetchScanResults(content, filename)
     } catch (err: unknown) {
       error.value = err instanceof Error ? err.message : 'Scan failed'
     } finally {
