@@ -25,7 +25,14 @@ function goToPackage(name: string, versionOrEco?: string) {
   router.push({ path: `/package/${encodeURIComponent(name)}`, query })
 }
 
-useHead({ title: computed(() => scanVM.value ? 'Scan results — pkglens' : 'pkglens') })
+useHead({
+  title: 'Scan package.json or composer.json — pkglens',
+  meta: [
+    { name: 'description', content: 'Upload your package.json or composer.json and scan all dependencies for known vulnerabilities in seconds.' },
+    { property: 'og:title', content: 'Scan dependencies — pkglens' },
+    { property: 'og:description', content: 'Upload your package.json or composer.json and scan all dependencies for known vulnerabilities.' },
+  ],
+})
 </script>
 
 <template>

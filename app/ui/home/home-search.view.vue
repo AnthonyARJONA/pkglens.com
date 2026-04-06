@@ -82,6 +82,29 @@ function openFileDialog() {
 
     <button class="scan-link" @click="openFileDialog">{{ scanLabel }}</button>
     <input ref="fileInput" type="file" accept=".json,.txt,.toml" hidden @change="handleFileSelect">
+
+    <section class="seo-content">
+      <h2>Why pkglens?</h2>
+      <div class="seo-grid">
+        <div class="seo-card">
+          <h3>Deep vulnerability scanning</h3>
+          <p>Scan direct dependencies for known CVEs using the OSV database. See which dependencies put your project at risk.</p>
+        </div>
+        <div class="seo-card">
+          <h3>Bundle analysis</h3>
+          <p>Understand what you're paying for. See tree-shaking support, module composition, and loading impact on slow connections.</p>
+        </div>
+        <div class="seo-card">
+          <h3>Maintenance health</h3>
+          <p>Check release cadence, maintainer count, and community activity. Know if a package is actively maintained before you depend on it.</p>
+        </div>
+        <div class="seo-card">
+          <h3>Curated alternatives</h3>
+          <p>Compare with hand-picked alternatives. See how your chosen package stacks up in downloads, bundle size, and security.</p>
+        </div>
+      </div>
+      <p class="seo-ecosystems">Supports <strong>npm</strong> and <strong>Composer</strong> packages. PyPI, Cargo, and Go coming soon.</p>
+    </section>
   </div>
 </template>
 
@@ -119,5 +142,20 @@ function openFileDialog() {
 }
 .drop-overlay p { font-size: 18px; font-weight: 600; }
 
-@media (max-width: 768px) { .hero-logo { font-size: 40px; } }
+.seo-content {
+  max-width: 700px; text-align: center; margin-top: var(--space-xl);
+  padding-top: var(--space-xl); border-top: 1px solid var(--border);
+}
+.seo-content h2 { font-size: 20px; font-weight: 700; color: var(--text-bright); margin-bottom: var(--space-lg); }
+.seo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-md); text-align: left; margin-bottom: var(--space-lg); }
+.seo-card { padding: 16px; background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius-lg); }
+.seo-card h3 { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+.seo-card p { font-size: 13px; color: var(--text-dim); line-height: 1.5; }
+.seo-ecosystems { font-size: 13px; color: var(--text-dim); }
+.seo-ecosystems strong { color: var(--text); }
+
+@media (max-width: 768px) {
+  .hero-logo { font-size: 40px; }
+  .seo-grid { grid-template-columns: 1fr; }
+}
 </style>

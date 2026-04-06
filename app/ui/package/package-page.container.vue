@@ -49,7 +49,27 @@ async function copyInstall() {
   window.setTimeout(() => { installCopied.value = false }, COPY_FEEDBACK_MS)
 }
 
-useHead({ title: computed(() => data.value ? `${data.value.registry.name} — pkglens` : 'Loading… — pkglens') })
+useHead({
+  title: computed(() => data.value ? `${data.value.registry.name} — pkglens` : 'Loading… — pkglens'),
+  meta: computed(() => {
+    if (!data.value) return []
+    const d = data.value
+    const desc = `${d.registry.name}: ${d.registry.description?.slice(0, 140) || 'Package analysis'}. Bundle size, dependencies, vulnerabilities, license & health.`
+    return [
+      { name: 'description', content: desc },
+      { property: 'og:title', content: `${d.registry.name} — pkglens` },
+      { property: 'og:description', content: desc },
+      { property: 'og:url', content: `https://pkglens.com/package/${encodeURIComponent(d.registry.name)}` },
+      { property: 'og:image', content: `https://pkglens.com/api/badge/${encodeURIComponent(d.registry.name)}` },
+      { name: 'twitter:title', content: `${d.registry.name} — pkglens` },
+      { name: 'twitter:description', content: desc },
+    ]
+  }),
+  link: computed(() => {
+    if (!data.value) return []
+    return [{ rel: 'canonical', href: `https://pkglens.com/package/${encodeURIComponent(data.value.registry.name)}` }]
+  }),
+})
 </script>
 
 <template>
