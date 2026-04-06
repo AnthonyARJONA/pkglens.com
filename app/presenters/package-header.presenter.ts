@@ -8,7 +8,7 @@ import { buildMetadataLine } from './metadata.presenter'
 import { buildQuickLinks, buildInstallCommand, type QuickLinkViewModel } from './quick-links.presenter'
 import { buildDepsVulnBanner, type DepsVulnBannerViewModel } from './deps-vuln-banner.presenter'
 
-export interface StatViewModel {
+interface StatViewModel {
   label: string
   value: string
   sub: string

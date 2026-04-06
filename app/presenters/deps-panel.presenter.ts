@@ -1,6 +1,6 @@
 import type { PackageData } from '~/core/package/package.types'
 
-export interface DepRowViewModel {
+interface DepRowViewModel {
   name: string
   version: string
   versionClean: string

@@ -54,7 +54,7 @@ export async function fetchGithubReleases(repo: string) {
   return fetchSafe<GithubRelease[]>({
     source: 'github-releases',
     cacheKey: repo,
-    url: `https://api.github.com/repos/${repo}/releases?per_page=20`,
+    url: `https://api.github.com/repos/${repo}/releases?per_page=30`,
     headers,
     fallback: [],
   })

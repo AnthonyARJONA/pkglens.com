@@ -47,11 +47,11 @@ export const packagistResolver: EcosystemResolver = {
     const repoUrl = latest.source?.url || meta?.repository
 
     const stableVersions = allVersions.filter((v) => isStableVersion(v.version))
-    const allVersionNames = allVersions.map((v) => ({
+    const allVersionNames = allVersions.slice(0, 25).map((v) => ({
       version: v.version,
       date: v.time || null,
     }))
-    const stableVersionNames = stableVersions.map((v) => ({
+    const stableVersionNames = stableVersions.slice(0, 25).map((v) => ({
       version: v.version,
       date: v.time || null,
     }))
@@ -70,7 +70,7 @@ export const packagistResolver: EcosystemResolver = {
         description: latest.description || meta?.description || '',
         latestVersion: latest.version,
         license: latest.license?.[0] || null,
-        time: Object.fromEntries(allVersions.map((v) => [v.version, v.time])),
+        lastPublishDate: latest.time || null,
         distTags: { latest: latest.version } as Record<string, string>,
         repository: repoUrl ? { type: 'git', url: repoUrl } : null,
         maintainers: (meta?.maintainers || []).map((m) => m.name),
@@ -83,8 +83,8 @@ export const packagistResolver: EcosystemResolver = {
         },
         versions: {
           total: allVersions.length,
-          stable: stableVersionNames.slice(0, 25),
-          all: allVersionNames.slice(0, 25),
+          stable: stableVersionNames,
+          all: allVersionNames,
         },
       } as RegistryResult,
       stale: versionsRes.stale,

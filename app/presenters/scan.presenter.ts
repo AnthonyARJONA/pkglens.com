@@ -3,7 +3,7 @@ import type { DeepReadonly } from 'vue'
 
 type ScanDepResult = ScanResult['dependencies'][number]
 
-export interface ScanRowViewModel {
+interface ScanRowViewModel {
   name: string
   version: string
   vulnCount: number

@@ -32,7 +32,7 @@ export const npmResolver: EcosystemResolver = {
         description: reg.description || latestData?.description || '',
         latestVersion,
         license: latestData?.license || reg.license || null,
-        time: reg.time || {},
+        lastPublishDate: reg.time?.[latestVersion] || null,
         distTags: reg['dist-tags'] || {},
         repository: latestData?.repository || reg.repository || null,
         maintainers: (reg.maintainers || []).map((m) => m.name),

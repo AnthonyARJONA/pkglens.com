@@ -30,7 +30,7 @@ export function computePopularityScore(data: PackageData): ScoreBreakdown {
   else if (versionCount > 5) { score += 10; factors.push({ label: `${versionCount} versions`, impact: 10 }) }
   else { score += 5; factors.push({ label: `${versionCount} versions — early`, impact: 5 }) }
 
-  const days = daysSinceDate(data.registry.time[data.registry.latestVersion])
+  const days = daysSinceDate(data.registry.lastPublishDate)
   if (days < TIME_THRESHOLDS.recent) { score += 15; factors.push({ label: 'Released this month', impact: 15 }) }
   else if (days < TIME_THRESHOLDS.active) { score += 10; factors.push({ label: 'Released recently', impact: 10 }) }
   else if (days < TIME_THRESHOLDS.stale) { score += 5; factors.push({ label: 'Released this year', impact: 5 }) }

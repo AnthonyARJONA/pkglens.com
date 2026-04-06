@@ -5,7 +5,7 @@ export interface RegistryResult {
   description: string
   latestVersion: string
   license: string | null
-  time: Record<string, string>
+  lastPublishDate: string | null
   distTags: Record<string, string>
   repository: { type: string; url: string } | string | null
   maintainers: string[]

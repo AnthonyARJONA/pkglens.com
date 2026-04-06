@@ -20,12 +20,6 @@
   border: 1px solid;
   display: inline-block;
 }
-.tag-ts { color: var(--cyan); border-color: rgba(125, 207, 255, 0.3); background: var(--cyan-bg); }
-.tag-license { color: var(--green); border-color: rgba(154, 206, 106, 0.3); background: var(--green-bg); }
-.tag-kw { color: var(--purple); border-color: rgba(187, 154, 247, 0.3); background: var(--purple-bg); }
-.tag-downloads { color: var(--orange); border-color: rgba(224, 175, 104, 0.3); background: var(--orange-bg); }
-.tag-version { color: var(--text-dim); border-color: var(--border); background: var(--bg-card); }
-.tag-engine { color: var(--green); border-color: rgba(154, 206, 106, 0.3); background: var(--green-bg); }
 
 /* ── Badges ── */
 .badge {

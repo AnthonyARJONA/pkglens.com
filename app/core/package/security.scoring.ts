@@ -42,7 +42,7 @@ export function computeSecurityScore(data: PackageData): ScoreBreakdown {
     factors.push({ label: `${maintainerCount} maintainers`, impact: 0 })
   }
 
-  const days = daysSinceDate(data.registry.time[data.registry.latestVersion])
+  const days = daysSinceDate(data.registry.lastPublishDate)
   if (days > TIME_THRESHOLDS.stale) {
     score -= 10
     factors.push({ label: 'No release in over a year', impact: -10 })

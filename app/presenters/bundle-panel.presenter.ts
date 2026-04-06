@@ -1,7 +1,7 @@
 import type { PackageData } from '~/core/package/package.types'
 import { formatBytes } from './package.presenter'
 
-export interface BundleStoryItem {
+interface BundleStoryItem {
   name: string
   sizeLabel: string
   percent: number
@@ -9,13 +9,13 @@ export interface BundleStoryItem {
   color: string
 }
 
-export interface TreeShakeViewModel {
+interface TreeShakeViewModel {
   label: string
   description: string
   isShakeable: boolean
 }
 
-export interface LoadingImpactItem {
+interface LoadingImpactItem {
   value: string
   label: string
 }

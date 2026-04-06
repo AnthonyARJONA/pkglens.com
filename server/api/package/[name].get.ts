@@ -1,3 +1,4 @@
+// Public API endpoint — not used by the frontend (which calls /api/pkg)
 import { fetchNpmRegistry, fetchNpmDownloads, fetchNpmDownloadsRange } from '../../ecosystems/npm/npm-registry.fetcher'
 import { fetchBundleSize } from '../../ecosystems/npm/npm-bundlephobia.fetcher'
 import { detectModuleSystem } from '../../ecosystems/npm/module-system.detector'
@@ -57,7 +58,7 @@ export default defineEventHandler(async (event) => {
       description: reg.description || latestData?.description || '',
       latestVersion,
       license: latestData?.license || reg.license || null,
-      time: reg.time || {},
+      lastPublishDate: reg.time?.[latestVersion] || null,
       distTags: reg['dist-tags'] || {},
       repository: latestData?.repository || reg.repository || null,
       versions: buildVersionSummary(reg),

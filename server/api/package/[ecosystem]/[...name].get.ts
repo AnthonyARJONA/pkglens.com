@@ -1,3 +1,4 @@
+// Public API endpoint — not used by the frontend (which calls /api/pkg)
 import { getEcosystemResolver } from '../../../core/ecosystems/ecosystem.factory'
 import type { EcosystemId } from '../../../core/ecosystems/ecosystem.interface'
 import { fetchVulnerabilities } from '../../../enrichers/osv.enricher'

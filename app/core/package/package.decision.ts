@@ -15,14 +15,6 @@ export function getScoreColor(score: number): string {
   return '#f7768e'
 }
 
-export function lastPublishStatus(dateStr: string | null | undefined): 'good' | 'warn' | 'bad' {
-  if (!dateStr) return 'warn'
-  const days = (Date.now() - new Date(dateStr).getTime()) / 86400000
-  if (days < 90) return 'good'
-  if (days < 365) return 'warn'
-  return 'bad'
-}
-
 export function getVersionTag(version: string, latestVersion: string): { label: string; color: string } | null {
   if (version === latestVersion) return { label: 'latest', color: 'accent' }
   const match = version.match(/^(\d+)\.(\d+)\.(\d+)$/)

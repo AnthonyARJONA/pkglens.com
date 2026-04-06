@@ -2,7 +2,7 @@ import type { PackageData, VulnData } from '~/core/package/package.types'
 import { getVulnSeverity, getVulnCve, getVulnGhsa, getVulnFixedVersion, vulnSummary } from '~/core/package/package.decision'
 import { formatDate } from './package.presenter'
 
-export interface VulnViewModel {
+interface VulnViewModel {
   id: string
   severity: string
   cve: string

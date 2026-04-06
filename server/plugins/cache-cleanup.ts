@@ -9,14 +9,16 @@ function runCleanup(): void {
     cleanupCache()
 
     const db = getDb()
-    const row = db.prepare('SELECT COUNT(*) as cnt FROM cache').get() as { cnt: number }
+    db.transaction(() => {
+      const row = db.prepare('SELECT COUNT(*) as cnt FROM cache').get() as { cnt: number }
 
-    if (row.cnt > MAX_ROWS) {
-      const excess = row.cnt - MAX_ROWS
-      db.prepare(
-        'DELETE FROM cache WHERE key IN (SELECT key FROM cache ORDER BY fetched_at ASC LIMIT ?)',
-      ).run(excess)
-    }
+      if (row.cnt > MAX_ROWS) {
+        const excess = row.cnt - MAX_ROWS
+        db.prepare(
+          'DELETE FROM cache WHERE key IN (SELECT key FROM cache ORDER BY fetched_at ASC LIMIT ?)',
+        ).run(excess)
+      }
+    })()
   }
   catch {
     // Cleanup failure is non-critical
