@@ -13,41 +13,30 @@ export interface ScanDepResult {
 }
 
 export interface ScanResult {
+  ecosystem: string
   summary: ScanSummary
   dependencies: ScanDepResult[]
   devDependencies: ScanDepResult[]
 }
 
+// Shared state across pages via Nuxt useState
 export function useScanFlow() {
-  const result = ref<ScanResult | null>(null)
-  const loading = ref(false)
-  const error = ref<string | null>(null)
+  const result = useState<ScanResult | null>('scan-result', () => null)
+  const loading = useState<boolean>('scan-loading', () => false)
+  const error = useState<string | null>('scan-error', () => null)
 
-  async function scanPackageJson(content: string): Promise<void> {
+  async function scanFile(content: string, filename: string | null): Promise<void> {
     loading.value = true
     error.value = null
     result.value = null
 
     try {
-      const parsed = JSON.parse(content)
-      if (!parsed.dependencies && !parsed.devDependencies) {
-        error.value = 'No dependencies found in package.json'
-        return
-      }
-
       result.value = await $fetch<ScanResult>('/api/scan', {
         method: 'POST',
-        body: {
-          dependencies: parsed.dependencies || {},
-          devDependencies: parsed.devDependencies || {},
-        },
+        body: { content, filename },
       })
     } catch (err: unknown) {
-      if (err instanceof SyntaxError) {
-        error.value = 'Invalid JSON format'
-      } else {
-        error.value = err instanceof Error ? err.message : 'Scan failed'
-      }
+      error.value = err instanceof Error ? err.message : 'Scan failed'
     } finally {
       loading.value = false
     }
@@ -58,11 +47,5 @@ export function useScanFlow() {
     error.value = null
   }
 
-  return {
-    result: readonly(result),
-    loading: readonly(loading),
-    error: readonly(error),
-    scanPackageJson,
-    reset,
-  }
+  return { result, loading, error, scanFile, reset }
 }

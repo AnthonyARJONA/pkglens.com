@@ -29,7 +29,7 @@ const emit = defineEmits<{ navigate: [name: string] }>()
 
     <!-- Dependencies with vulns -->
     <div v-if="deps.length > 0" class="scan-section">
-      <div class="section-title">Vulnerable Dependencies</div>
+      <div class="section-title">{{ depsLabel }}</div>
       <table class="scan-table">
         <thead>
           <tr><th>Package</th><th>Version</th><th>Vulns</th><th>Severity</th><th>CVE</th></tr>
@@ -47,7 +47,7 @@ const emit = defineEmits<{ navigate: [name: string] }>()
     </div>
 
     <div v-if="devDeps.length > 0" class="scan-section">
-      <div class="section-title">Vulnerable DevDependencies</div>
+      <div class="section-title">{{ devDepsLabel }}</div>
       <table class="scan-table">
         <thead>
           <tr><th>Package</th><th>Version</th><th>Vulns</th><th>Severity</th><th>CVE</th></tr>

@@ -3,6 +3,7 @@ import type { EcosystemId } from '~/core/ecosystem/ecosystem.types'
 
 const router = useRouter()
 const { suggestions: searchResults, search: searchInput, clear: clearSearch } = useSearchSuggestions()
+const { scanFile } = useScanFlow()
 
 const QUICK_LINKS: Record<EcosystemId, Array<{ name: string; ecosystem: EcosystemId }>> = {
   npm: [
@@ -52,6 +53,11 @@ function handleInput(q: string, eco: EcosystemId) {
   searchInput(q, eco)
 }
 
+async function handleScanFile(content: string, filename: string) {
+  await scanFile(content, filename)
+  router.push('/scan')
+}
+
 useHead({ title: 'pkglens — see inside your packages' })
 </script>
 
@@ -64,5 +70,6 @@ useHead({ title: 'pkglens — see inside your packages' })
     @search="handleSearch"
     @input="handleInput"
     @ecosystem-change="(eco) => activeEco = eco"
+    @scan-file="handleScanFile"
   />
 </template>

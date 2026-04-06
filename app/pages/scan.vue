@@ -1,50 +1,64 @@
 <script setup lang="ts">
+import type { EcosystemId } from '~/core/ecosystem/ecosystem.types'
 import { presentScanResult } from '~/presenters/scan.presenter'
 
 const router = useRouter()
-const { result, loading, error, scanPackageJson, reset } = useScanFlow()
+const { result, loading, error } = useScanFlow()
+const { suggestions, search: searchSuggestions } = useSearchSuggestions()
 
 const scanVM = computed(() => result.value ? presentScanResult(result.value) : null)
+const scanEco = computed(() => (result.value?.ecosystem as EcosystemId) || 'npm')
 
-function goToPackage(name: string) {
-  router.push(`/package/${encodeURIComponent(name)}`)
+watch([result, loading, error], () => {
+  if (!result.value && !loading.value && !error.value) {
+    router.replace('/')
+  }
+}, { immediate: true })
+
+function goToPackage(name: string, eco?: EcosystemId) {
+  const effectiveEco = eco || result.value?.ecosystem
+  const query = effectiveEco && effectiveEco !== 'npm' ? { eco: effectiveEco } : {}
+  router.push({ path: `/package/${encodeURIComponent(name)}`, query })
 }
 
-useHead({ title: 'Scan package.json — pkglens' })
+useHead({ title: computed(() => scanVM.value ? 'Scan results — pkglens' : 'pkglens') })
 </script>
 
 <template>
-  <header class="header">
-    <div class="header-inner">
-      <NuxtLink to="/" class="logo">pkg<span>lens</span></NuxtLink>
-      <h2 class="page-title">Scan package.json</h2>
-    </div>
-  </header>
+  <div v-if="scanVM || loading || error">
+    <header class="header">
+      <div class="header-inner">
+        <NuxtLink to="/" class="logo">pkg<span>lens</span></NuxtLink>
+        <SearchBarView
+          variant="header"
+          :suggestions="suggestions"
+          :initial-ecosystem="scanEco"
+          @search="(name, eco) => goToPackage(name, eco)"
+          @input="(q, eco) => searchSuggestions(q, eco)"
+        />
+      </div>
+    </header>
 
-  <div class="container">
-    <ScanUploadView v-if="!scanVM" :loading="loading" :error="error" @scan="scanPackageJson" />
-    <template v-else>
-      <button class="reset-btn" @click="reset()">Scan another file</button>
-      <ScanResultsView v-bind="scanVM" @navigate="goToPackage" />
-    </template>
+    <div class="container">
+      <div v-if="loading" class="scan-loading">
+        <div class="spinner" />
+        <p>Scanning dependencies…</p>
+      </div>
+      <p v-else-if="error" class="scan-error">{{ error }}</p>
+      <ScanResultsView v-else-if="scanVM" v-bind="scanVM" @navigate="goToPackage" />
+    </div>
   </div>
 </template>
 
 <style scoped>
-.header {
-  padding: 12px var(--space-lg); background: var(--bg-header);
-  border-bottom: 1px solid var(--border);
-}
+.header { padding: 12px var(--space-lg); background: var(--bg-header); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; }
 .header-inner { max-width: 960px; margin: 0 auto; display: flex; align-items: center; gap: var(--space-lg); }
-.logo { font-weight: 800; font-size: 20px; color: var(--accent); letter-spacing: -0.5px; text-decoration: none; }
+.logo { font-weight: 800; font-size: 20px; color: var(--accent); letter-spacing: -0.5px; text-decoration: none; flex-shrink: 0; }
 .logo span { color: var(--text-dim); font-weight: 500; }
-.page-title { font-size: 16px; font-weight: 500; color: var(--text-dim); }
 .container { max-width: 960px; margin: 0 auto; padding: var(--space-lg); }
-.reset-btn {
-  margin-bottom: var(--space-md); padding: 6px 16px;
-  background: var(--bg-card); border: 1px solid var(--border);
-  border-radius: var(--radius-md); color: var(--text-dim); font-size: 13px;
-  cursor: pointer; font-family: inherit;
-}
-.reset-btn:hover { border-color: var(--accent); color: var(--accent); }
+.scan-loading { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 40vh; gap: 16px; }
+.spinner { width: 40px; height: 40px; border: 3px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.scan-loading p { color: var(--text-dim); font-size: 14px; }
+.scan-error { color: var(--red); font-size: 14px; text-align: center; padding: var(--space-xl); }
 </style>
