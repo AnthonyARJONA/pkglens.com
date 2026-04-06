@@ -24,6 +24,9 @@ export interface SidebarViewModel {
   licensePermissions: LicensePermission[]
   quickLinks: QuickLinkViewModel[]
   recentVersions: Array<{ version: string; date: string }>
+  badgeMarkdown: string
+  badgeUrl: string
+  packageUrl: string
 }
 
 export interface PackageHeaderViewModel {
@@ -41,6 +44,7 @@ export interface PackageHeaderViewModel {
 
 export function presentPackageHeader(data: PackageData): PackageHeaderViewModel {
   const scores = computeScores(data)
+  const eco = (data.meta.ecosystem as string) || 'npm'
   const depCount = Object.keys(data.registry.latest?.dependencies || {}).length
   const peerCount = Object.keys(data.registry.latest?.peerDependencies || {}).length
 
@@ -56,17 +60,20 @@ export function presentPackageHeader(data: PackageData): PackageHeaderViewModel 
     depsVulnBanner: buildDepsVulnBanner(data),
     sidebar: {
       scores: [
-        presentScore(scores.security, 'security'),
-        presentScore(scores.quality, 'quality'),
-        presentScore(scores.popularity, 'popularity'),
+        presentScore({ ...scores.security, score: data.scores?.security ?? scores.security.score }, 'security'),
+        presentScore({ ...scores.quality, score: data.scores?.quality ?? scores.quality.score }, 'quality'),
+        presentScore({ ...scores.popularity, score: data.scores?.popularity ?? scores.popularity.score }, 'popularity'),
       ],
-      overallScore: scores.overall,
+      overallScore: data.scores?.overall ?? scores.overall,
       maintainerCount: data.registry.maintainers.length,
       installCommand: data.registry.installCommand || buildInstallCommand(data.registry.name),
       license: data.registry.license || '—',
       licensePermissions: getLicensePermissions(data.registry.license),
       quickLinks: buildQuickLinks(data, (data.meta.ecosystem as any) || 'npm'),
       recentVersions: data.registry.versions.stable.slice(0, 3).map((v) => ({ version: v.version, date: formatDate(v.date) })),
+      badgeUrl: `https://pkglens.com/api/badge/${encodeURIComponent(data.registry.name)}${eco !== 'npm' ? `?ecosystem=${eco}` : ''}`,
+      packageUrl: `https://pkglens.com/package/${encodeURIComponent(data.registry.name)}${eco !== 'npm' ? `?eco=${eco}` : ''}`,
+      badgeMarkdown: `[![pkglens](https://pkglens.com/api/badge/${encodeURIComponent(data.registry.name)}${eco !== 'npm' ? `?ecosystem=${eco}` : ''})](https://pkglens.com/package/${encodeURIComponent(data.registry.name)}${eco !== 'npm' ? `?eco=${eco}` : ''})`,
     },
   }
 }

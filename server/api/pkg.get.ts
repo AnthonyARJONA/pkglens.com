@@ -1,3 +1,4 @@
+import { computeServerScores } from '../scoring/compute-scores'
 import { getEcosystemResolver } from '../core/ecosystems/ecosystem.factory'
 import type { EcosystemId } from '../core/ecosystems/ecosystem.interface'
 import { fetchVulnerabilities } from '../enrichers/osv.enricher'
@@ -48,7 +49,7 @@ export default defineEventHandler(async (event) => {
     fetchDepsVulnerabilities(directDeps, osvEcosystem),
   ])
 
-  return {
+  const response = {
     meta: { stale: registry.stale, fetchedAt: new Date().toISOString(), ecosystem },
     registry: { ...reg, installCommand: resolver.installCommand(name) },
     downloads: downloads.data,
@@ -60,5 +61,10 @@ export default defineEventHandler(async (event) => {
       .map((r) => ({ tag: r.tag_name, body: r.body || '', publishedAt: r.published_at })),
     alternatives: null,
     depsVulnerabilities: depsVulns,
+    scores: null as ReturnType<typeof computeServerScores> | null,
   }
+
+  response.scores = computeServerScores(response as any)
+
+  return response
 })

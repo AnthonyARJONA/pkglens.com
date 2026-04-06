@@ -22,6 +22,12 @@ export interface PackageData {
   releases: readonly ReleaseData[]
   alternatives: readonly string[] | null
   depsVulnerabilities: readonly DepVulnResult[]
+  scores: {
+    security: number
+    quality: number
+    popularity: number
+    overall: number
+  } | null
 }
 
 export type TabId = 'deps' | 'bundle' | 'security' | 'changelog' | 'alternatives'

@@ -2,8 +2,15 @@
 import type { SidebarViewModel } from '~/presenters/package-header.presenter'
 import type { LicensePermission } from '~/core/package/license.registry'
 
-defineProps<SidebarViewModel & { installCopied: boolean }>()
+const props = defineProps<SidebarViewModel & { installCopied: boolean }>()
 const emit = defineEmits<{ copy: [] }>()
+const badgeCopied = ref(false)
+
+async function copyBadge() {
+  await navigator.clipboard.writeText(props.badgeMarkdown)
+  badgeCopied.value = true
+  window.setTimeout(() => { badgeCopied.value = false }, 2000)
+}
 </script>
 
 <template>
@@ -62,6 +69,14 @@ const emit = defineEmits<{ copy: [] }>()
         </div>
       </div>
     </div>
+    <div class="sidebar-section">
+      <div class="sidebar-title">Badge</div>
+      <div class="badge-row" @click="copyBadge">
+        <img :src="badgeUrl.replace('https://pkglens.com', '')" alt="" height="20">
+        <svg v-if="!badgeCopied" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14"><rect x="9" y="9" width="13" height="13" rx="2" /><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1" /></svg>
+        <svg v-else viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5" width="14" height="14"><polyline points="20 6 9 17 4 12" /></svg>
+      </div>
+    </div>
   </aside>
 </template>
 
@@ -104,4 +119,14 @@ const emit = defineEmits<{ copy: [] }>()
 .recent-version { display: flex; justify-content: space-between; font-size: 12px; }
 .rv-version { color: var(--text); font-weight: 500; }
 .rv-date { color: var(--text-dim); }
+
+.badge-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 8px 12px; background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: var(--radius-md); cursor: pointer; transition: all 0.15s;
+}
+.badge-row:hover { border-color: var(--accent); }
+.badge-row img { display: block; }
+.badge-row svg { color: var(--text-dim); flex-shrink: 0; }
+.badge-row:hover svg { color: var(--accent); }
 </style>
