@@ -34,39 +34,40 @@ pkglens brings it all together in one place, with computed scores and curated al
 | Ecosystem | Status | Registry |
 |-----------|--------|----------|
 | **npm** (JavaScript/TypeScript) | Available | registry.npmjs.org |
-| **PyPI** (Python) | Planned | pypi.org |
+| **Packagist** (PHP/Composer) | Available | packagist.org |
+| **PyPI** (Python) | Available | pypi.org |
 | **Cargo** (Rust) | Planned | crates.io |
-| **Packagist** (PHP/Composer) | Planned | packagist.org |
 | **Go Modules** | Planned | proxy.golang.org |
 | **RubyGems** (Ruby) | Planned | rubygems.org |
 | **NuGet** (.NET) | Planned | nuget.org |
 
 ## Architecture
 
-pkglens is a single Nuxt 4 app (Vue 3 + Nitro server) — no monorepo, no vendor lock-in. It deploys anywhere Node.js runs.
+pkglens is a single Nuxt 4 app (Vue 3 + Nitro server) deployed on Cloudflare Pages, with Cloudflare D1 as the cache store.
 
 ```
 app/                          Server:
 ├── core/        (pure TS)    server/
-├── presenters/  (formatting) ├── ecosystems/npm/  (fetchers)
-├── composables/ (use cases)  ├── enrichers/       (GitHub, OSV)
-├── gateway/     ($fetch)     ├── core/cache/      (SQLite + SWR)
-├── ui/          (components) └── data/            (alternatives)
-├── design/      (CSS tokens)
+├── presenters/  (formatting) ├── ecosystems/         (npm, pypi, packagist)
+├── composables/ (use cases)  ├── enrichers/          (GitHub, OSV)
+├── gateway/     ($fetch)     ├── core/cache/         (D1 + SWR + lazy cleanup)
+├── ui/          (components) ├── database/d1.ts      (binding accessor)
+├── design/      (CSS tokens) └── plugins/            (cloudflare-bindings)
 └── pages/       (routing)
 ```
 
 **Frontend** follows clean architecture: `core` (pure logic) → `presenters` (formatting) → `composables` (use cases) → `gateway` (API calls) → `ui` (components with container/view split).
 
-**Backend** uses a single aggregated endpoint (`GET /api/package/:name`) that fetches from all sources in parallel, caches in SQLite with per-source TTLs, and returns one JSON payload. The frontend makes **one request** per page.
+**Backend** uses a single aggregated endpoint (`GET /api/pkg?name=...&ecosystem=...`) that fetches from all sources in parallel, caches in D1 with per-source TTLs, and returns one JSON payload. The frontend makes **one request** per page.
 
 ### Key design decisions
 
-- **SQLite cache with stale-while-revalidate** — 100 users requesting "react" = 1 external API call. The other 99 are served from cache in ~2ms.
+- **D1 cache with stale-while-revalidate** — 100 users requesting "react" = 1 external API call. The other 99 are served from cache.
+- **Lazy cache cleanup** — 1% of cache reads trigger a background delete of expired rows. No cron, no scheduled Worker — the request itself does the gardening.
 - **Circuit breaker** — If an external API fails 3 times in 5 minutes, we stop calling it for 10 minutes and serve stale data.
-- **Ecosystem-based server structure** — Adding PyPI support = adding `server/ecosystems/pypi/` with fetchers. The architecture is ready.
+- **Ecosystem-based server structure** — Adding a new ecosystem = one folder under `server/ecosystems/`, one resolver, one line of registration.
 - **Container/View component split** — Views are pure (props only), testable in Storybook. Containers wire composables to views.
-- **Curated alternatives** — Not keyword-based garbage. Hand-picked alternatives for 100+ popular packages (React → Vue/Svelte/Solid, Express → Fastify/Hono, etc.).
+- **Curated alternatives** — Not keyword-based garbage. Hand-picked alternatives for 900+ popular packages across the three ecosystems.
 
 ## Getting started
 
@@ -74,7 +75,10 @@ app/                          Server:
 # Install dependencies
 pnpm install
 
-# Start dev server
+# Apply D1 migrations to the local miniflare DB
+pnpm db:migrate:local
+
+# Start dev server (D1 binding wired via nitro-cloudflare-dev)
 pnpm dev
 
 # Open http://localhost:3000
@@ -90,22 +94,33 @@ GITHUB_TOKEN=ghp_...
 
 Copy `.env.example` to `.env` and fill in your values.
 
+### Deploy to Cloudflare Pages
+
+```bash
+wrangler login                            # one-time auth
+wrangler d1 create pkglens                # copy database_id into wrangler.toml
+pnpm db:migrate:remote                    # apply schema to remote D1
+wrangler pages secret put GITHUB_TOKEN    # set the GitHub token as a secret
+pnpm deploy                               # build + push to Cloudflare Pages
+```
+
 ## Tech stack
 
 | Layer | Technology | Why |
 |-------|-----------|-----|
-| Framework | Nuxt 4 | SSR + server routes in one project, deploys anywhere |
+| Framework | Nuxt 4 | SSR + server routes in one project |
 | Frontend | Vue 3 | Composition API, reactive, lightweight |
-| Server | Nitro (H3) | Same engine as Hono, runs on Node/Bun/Workers |
-| Cache | SQLite (better-sqlite3) | Zero infra, file-based, fast |
+| Server | Nitro (H3) on Cloudflare Workers | Edge runtime, global low latency |
+| Cache | Cloudflare D1 | SQLite-compatible, zero infra, 5GB free |
+| Hosting | Cloudflare Pages | Free tier, global CDN, SSL, atomic deploys |
 | Styling | CSS custom properties | No dependency, design tokens centralized |
 | Package manager | pnpm | Fast, strict, disk-efficient |
 
 ## API
 
-### `GET /api/package/:name`
+### `GET /api/pkg?name=...&ecosystem=npm|pypi|packagist`
 
-Returns aggregated data for a package. All external sources are fetched in parallel and cached.
+Returns aggregated data for a package. All external sources are fetched in parallel and cached in D1.
 
 **Response:**
 
@@ -118,8 +133,17 @@ Returns aggregated data for a package. All external sources are fetched in paral
   "vulnerabilities": [...],
   "github": { "stars": 28000, "forks": 980, "openIssues": 142, "repo": "colinhacks/zod" },
   "releases": [{ "tag": "v3.22.4", "body": "...", "publishedAt": "..." }],
-  "alternatives": ["yup", "joi", "valibot", "arktype", "superstruct"]
+  "alternatives": ["yup", "joi", "valibot", "arktype", "superstruct"],
+  "scores": { "security": 95, "quality": 88, "popularity": 72, "overall": 86 }
 }
+```
+
+### `GET /api/badge/:name?ecosystem=npm|pypi|packagist`
+
+Returns an SVG badge with the composite score. Drop it in any README:
+
+```markdown
+![pkglens score](https://pkglens.com/api/badge/zod)
 ```
 
 ## Contributing
