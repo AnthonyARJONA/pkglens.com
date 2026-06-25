@@ -1,4 +1,3 @@
-import { createHash } from 'crypto'
 import { fetchSafe } from '../core/fetcher/safe-fetcher'
 
 interface OsvBatchQuery {
@@ -49,7 +48,7 @@ export async function fetchDepsVulnerabilities(
 
   const result = await fetchSafe<OsvBatchResponse>({
     source: 'osv-vulns',
-    cacheKey: `batch:${hashString(cacheKey)}`,
+    cacheKey: `batch:${await hashString(cacheKey)}`,
     url: 'https://api.osv.dev/v1/querybatch',
     method: 'POST',
     body: { queries },
@@ -80,6 +79,11 @@ export async function fetchDepsVulnerabilities(
   return output
 }
 
-function hashString(str: string): string {
-  return createHash('sha256').update(str).digest('hex').slice(0, 16)
+async function hashString(str: string): Promise<string> {
+  const bytes = new TextEncoder().encode(str)
+  const hash = await crypto.subtle.digest('SHA-256', bytes)
+  return Array.from(new Uint8Array(hash))
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('')
+    .slice(0, 16)
 }

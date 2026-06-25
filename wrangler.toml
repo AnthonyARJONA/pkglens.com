@@ -1,0 +1,9 @@
+name = "pkglens"
+compatibility_date = "2026-06-25"
+pages_build_output_dir = "dist"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "pkglens"
+database_id = "REPLACE_WITH_REAL_ID_AFTER_wrangler_d1_create"
+migrations_dir = "migrations"

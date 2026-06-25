@@ -74,8 +74,10 @@ export default defineNuxtConfig({
   ],
 
   nitro: {
-    compressPublicAssets: true,
+    preset: 'cloudflare-pages',
   },
+
+  modules: ['nitro-cloudflare-dev'],
 
   runtimeConfig: {
     githubToken: process.env.GITHUB_TOKEN || '',

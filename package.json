@@ -6,24 +6,29 @@
     "build": "nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
-    "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "preview": "wrangler pages dev",
+    "deploy": "nuxt build && wrangler pages deploy",
+    "postinstall": "nuxt prepare",
+    "db:migrate:local": "wrangler d1 migrations apply pkglens --local",
+    "db:migrate:remote": "wrangler d1 migrations apply pkglens --remote"
   },
   "dependencies": {
-    "better-sqlite3": "^12.8.0",
     "nuxt": "^4.4.2",
     "vue": "^3.5.31",
     "vue-router": "^5.0.4"
   },
   "devDependencies": {
-    "@types/better-sqlite3": "^7.6.13",
-    "vue-tsc": "^3.2.6"
+    "@cloudflare/workers-types": "^4.20250620.0",
+    "nitro-cloudflare-dev": "^0.2.2",
+    "vue-tsc": "^3.2.6",
+    "wrangler": "^3.95.0"
   },
   "pnpm": {
     "onlyBuiltDependencies": [
-      "better-sqlite3",
       "esbuild",
-      "@parcel/watcher"
+      "@parcel/watcher",
+      "workerd"
     ]
-  }
+  },
+  "packageManager": "pnpm@10.26.0+sha512.3b3f6c725ebe712506c0ab1ad4133cf86b1f4b687effce62a9b38b4d72e3954242e643190fc51fa1642949c735f403debd44f5cb0edd657abe63a8b6a7e1e402"
 }
