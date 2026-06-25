@@ -1,5 +1,6 @@
 import type { EcosystemResolver, RegistryResult, DownloadsResult, BundleResult } from '../../core/ecosystems/ecosystem.interface'
-import { fetchNpmRegistry, fetchNpmDownloads, fetchNpmDownloadsRange } from './npm-registry.fetcher'
+import { fetchNpmRegistry, fetchNpmRegistryVersion, fetchNpmDownloads, fetchNpmDownloadsRange } from './npm-registry.fetcher'
+import type { NpmVersionData } from './npm-registry.fetcher'
 import { fetchBundleSize } from './npm-bundlephobia.fetcher'
 import { detectModuleSystem } from './module-system.detector'
 import { buildSparkline } from './sparkline.builder'
@@ -13,18 +14,22 @@ export const npmResolver: EcosystemResolver = {
     if (!result.data) return { data: null, stale: result.stale }
 
     const reg = result.data
-    let latestVersion = reg['dist-tags']?.latest || Object.keys(reg.versions || {}).pop() || ''
+    let latestVersion = reg['dist-tags']?.latest || reg.versionsList[reg.versionsList.length - 1] || ''
+    let latestData: NpmVersionData | undefined = reg.versions?.[latestVersion]
 
     if (version) {
-      const allKeys = Object.keys(reg.versions || {}).reverse()
-      const match = allKeys.find((v) => {
+      const match = reg.versionsList.findLast((v) => {
         const clean = v.replace(/^v/, '')
         return clean === version || v === version || clean.startsWith(version + '.')
       })
-      if (match) latestVersion = match
+      if (match && match !== latestVersion) {
+        const specific = await fetchNpmRegistryVersion(name, match)
+        if (specific.data) {
+          latestVersion = match
+          latestData = specific.data
+        }
+      }
     }
-
-    const latestData = reg.versions?.[latestVersion]
 
     return {
       data: {
@@ -35,7 +40,7 @@ export const npmResolver: EcosystemResolver = {
         lastPublishDate: reg.time?.[latestVersion] || null,
         distTags: reg['dist-tags'] || {},
         repository: latestData?.repository || reg.repository || null,
-        maintainers: (reg.maintainers || []).map((m) => m.name),
+        maintainers: reg.maintainers.map((m) => m.name),
         latest: latestData ? {
           dependencies: latestData.dependencies || {},
           peerDependencies: latestData.peerDependencies || {},
@@ -43,7 +48,7 @@ export const npmResolver: EcosystemResolver = {
           engines: latestData.engines || {},
           moduleSystem: detectModuleSystem(latestData),
         } : null,
-        versions: buildVersionSummary(reg),
+        versions: buildVersionSummary({ versionsList: reg.versionsList, time: reg.time }),
       } satisfies RegistryResult,
       stale: result.stale,
     }

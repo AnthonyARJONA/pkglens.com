@@ -1,28 +1,29 @@
 import { isCircuitOpen, recordFailure, recordSuccess } from '../cache/circuit-breaker'
 import { cachedFetch } from '../cache/cache.service'
 
-interface FetchOptions {
+interface FetchOptions<T> {
   source: string
   cacheKey: string
   url: string
   method?: 'GET' | 'POST'
   body?: unknown
   headers?: Record<string, string>
-  fallback?: unknown
+  fallback?: T | null
+  transform?: (raw: unknown) => T
 }
 
-export async function fetchSafe<T>(options: FetchOptions): Promise<{ data: T | null; stale: boolean }> {
-  const { source, cacheKey, url, method = 'GET', body, headers = {}, fallback = null } = options
+export async function fetchSafe<T>(options: FetchOptions<T>): Promise<{ data: T | null; stale: boolean }> {
+  const { source, cacheKey, url, method = 'GET', body, headers = {}, fallback = null, transform } = options
 
   if (isCircuitOpen(source)) {
-    // Try cache even if circuit is open
     try {
       const cached = await cachedFetch<T>(source, cacheKey, async () => {
         throw new Error('circuit open')
       })
       return { data: cached.data, stale: cached.stale }
-    } catch {
-      return { data: fallback as T | null, stale: true }
+    }
+    catch {
+      return { data: fallback, stale: true }
     }
   }
 
@@ -39,16 +40,17 @@ export async function fetchSafe<T>(options: FetchOptions): Promise<{ data: T | n
       }
 
       const res = await fetch(url, fetchOptions)
-      if (!res.ok) {
-        throw new Error(`${source} responded with ${res.status}`)
-      }
-      return res.json()
+      if (!res.ok) throw new Error(`${source} responded with ${res.status}`)
+      const raw = await res.json()
+      return transform ? transform(raw) : (raw as T)
     })
 
     recordSuccess(source)
     return { data: result.data, stale: result.stale }
-  } catch {
+  }
+  catch (err) {
+    console.error(`[fetchSafe] ${source} failed for ${cacheKey}:`, err instanceof Error ? err.message : err)
     recordFailure(source)
-    return { data: fallback as T | null, stale: true }
+    return { data: fallback, stale: true }
   }
 }

@@ -1,38 +1,18 @@
 import { fetchSafe } from '../../core/fetcher/safe-fetcher'
+import { projectNpmRegistry, projectVersion } from './npm-registry.projector'
+import type { NpmRegistryData, NpmVersionData } from './npm-registry.projector'
 
-export interface NpmRegistryData {
-  name: string
-  description: string
-  'dist-tags': Record<string, string>
-  versions: Record<string, NpmVersionData>
-  time: Record<string, string>
-  license: string
-  repository: { type: string; url: string } | string
-  keywords: string[]
-  maintainers: Array<{ name: string; email?: string }>
-}
-
-export interface NpmVersionData {
-  name: string
-  version: string
-  description: string
-  license: string
-  dependencies: Record<string, string>
-  peerDependencies: Record<string, string>
-  devDependencies: Record<string, string>
-  keywords: string[]
-  types: string
-  typings: string
-  repository: { type: string; url: string } | string
-  engines: Record<string, string>
-  type: string
-  module: string
-  exports: unknown
-  dist: { unpackedSize?: number }
-}
+export type { NpmRegistryData, NpmVersionData }
 
 export interface NpmDownloads {
   downloads: number
+  start: string
+  end: string
+  package: string
+}
+
+export interface NpmDownloadsRange {
+  downloads: Array<{ downloads: number; day: string }>
   start: string
   end: string
   package: string
@@ -43,6 +23,16 @@ export async function fetchNpmRegistry(name: string) {
     source: 'npm-registry',
     cacheKey: name,
     url: `https://registry.npmjs.org/${encodeURIComponent(name)}`,
+    transform: projectNpmRegistry,
+  })
+}
+
+export async function fetchNpmRegistryVersion(name: string, version: string) {
+  return fetchSafe<NpmVersionData>({
+    source: 'npm-registry',
+    cacheKey: `${name}@${version}`,
+    url: `https://registry.npmjs.org/${encodeURIComponent(name)}/${encodeURIComponent(version)}`,
+    transform: projectVersion,
   })
 }
 
@@ -52,13 +42,6 @@ export async function fetchNpmDownloads(name: string) {
     cacheKey: name,
     url: `https://api.npmjs.org/downloads/point/last-week/${encodeURIComponent(name)}`,
   })
-}
-
-export interface NpmDownloadsRange {
-  downloads: Array<{ downloads: number; day: string }>
-  start: string
-  end: string
-  package: string
 }
 
 export async function fetchNpmDownloadsRange(name: string) {
