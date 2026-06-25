@@ -2,6 +2,9 @@
   "name": "pkglens-com",
   "type": "module",
   "private": true,
+  "license": "MIT",
+  "author": "Anthony ARJONA",
+  "repository": "github:anthonyarjona/pkglens.com",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
