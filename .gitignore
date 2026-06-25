@@ -18,6 +18,9 @@ logs
 .fleet
 .idea
 
+# Personal AI assistant notes (not part of the public project)
+CLAUDE.md
+
 # Local env files
 .env
 .env.*

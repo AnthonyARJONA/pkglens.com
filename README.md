@@ -148,7 +148,7 @@ Returns an SVG badge with the composite score. Drop it in any README:
 
 ## Contributing
 
-This project follows clean architecture principles. Before contributing, read `CLAUDE.md` for the full set of code rules and conventions.
+This project follows clean architecture principles: one responsibility per file, presenters as pure functions, container/view component split, gateway-isolated network calls, and dependencies pointing inward (UI → composables → core).
 
 ## License
 
